@@ -2,9 +2,9 @@ package edu.nju.cheess.cloudserver.controller;
 
 import edu.nju.cheess.cloudserver.bean.PasswordBean;
 import edu.nju.cheess.cloudserver.bean.ResultMessageBean;
-import edu.nju.cheess.cloudserver.entity.User;
+import edu.nju.cheess.cloudserver.bean.UserInfoBean;
+import edu.nju.cheess.cloudserver.bean.UserPasswordBean;
 import edu.nju.cheess.cloudserver.service.UserService;
-import edu.nju.cheess.cloudserver.util.ResultMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,15 +31,9 @@ public class UserController {
             method = RequestMethod.POST,
             produces = {"application/json; charset=UTF-8"})
     public ResultMessageBean signUp(
-            @RequestBody User user) {
-        ResultMessage resultMessage = userService.signUp(user.getUsername(), user.getPassword());
-        ResultMessageBean result = new ResultMessageBean(false);
-        if (resultMessage == ResultMessage.SUCCESS) {
-            result.result = true;
-        } else if (resultMessage == ResultMessage.EXIST) {
-            result.message = "该用户名已存在";
-        }
-        return result;
+            @RequestBody UserPasswordBean user) {
+
+        return userService.signUp(user.getUsername(), user.getPassword());
     }
 
     /**
@@ -53,15 +47,9 @@ public class UserController {
             value = "/sign-in",
             method = RequestMethod.POST)
     public ResultMessageBean signIn(
-            @RequestBody User user) {
-        ResultMessage resultMessage = userService.signIn(user.getUsername(), user.getPassword());
-        ResultMessageBean result = new ResultMessageBean(false);
-        if (resultMessage == ResultMessage.SUCCESS) {
-            result.result = true;
-        } else if (resultMessage == ResultMessage.FAILED) {
-            result.message = "密码错误";
-        }
-        return result;
+            @RequestBody UserPasswordBean user) {
+
+        return userService.signIn(user.getUsername(), user.getPassword());
     }
 
     /**
@@ -87,13 +75,15 @@ public class UserController {
     @RequestMapping(
             value = "",
             method = RequestMethod.GET)
-    public User getUserInfo() {
+    public UserInfoBean getUserInfo() {
         return userService.getUserInfo();
     }
+
 
     /**
      * 修改密码
      *
+     * @param password 新旧密码
      * @return 是否修改成功
      */
     @ResponseBody
@@ -102,18 +92,14 @@ public class UserController {
             method = RequestMethod.POST,
             produces = {"application/json; charset=UTF-8"})
     public ResultMessageBean editPassword(@RequestBody PasswordBean password) {
-        ResultMessage resultMessage = userService.resetPassword(password);
-        boolean result = resultMessage == ResultMessage.SUCCESS;
-        String message = "";
-        if (!result) {
-            message = "修改失败";
-        }
-        return new ResultMessageBean(result, message);
+
+        return userService.resetPassword(password);
     }
 
     /**
      * 修改个人信息
      *
+     * @param user 用户信息
      * @return 是否修改成功
      */
     @ResponseBody
@@ -121,14 +107,9 @@ public class UserController {
             value = "/info",
             method = RequestMethod.POST,
             produces = {"application/json; charset=UTF-8"})
-    public ResultMessageBean editUserInfo(@RequestBody User user) {
-        ResultMessage resultMessage = userService.editUserInfo(user);
-        boolean result = resultMessage == ResultMessage.SUCCESS;
-        String message = "";
-        if (!result) {
-            message = "修改失败";
-        }
-        return new ResultMessageBean(result, message);
+    public ResultMessageBean editUserInfo(@RequestBody UserInfoBean user) {
+
+        return userService.editUserInfo(user);
     }
 
 }

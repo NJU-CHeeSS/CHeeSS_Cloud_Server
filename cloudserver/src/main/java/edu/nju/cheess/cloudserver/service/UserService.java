@@ -1,8 +1,8 @@
 package edu.nju.cheess.cloudserver.service;
 
 import edu.nju.cheess.cloudserver.bean.PasswordBean;
-import edu.nju.cheess.cloudserver.entity.User;
-import edu.nju.cheess.cloudserver.util.ResultMessage;
+import edu.nju.cheess.cloudserver.bean.ResultMessageBean;
+import edu.nju.cheess.cloudserver.bean.UserInfoBean;
 
 public interface UserService {
 
@@ -13,14 +13,14 @@ public interface UserService {
      * @param password 用户密码
      * @return 当前登录状态
      */
-    ResultMessage signIn(String username, String password);
+    ResultMessageBean signIn(String username, String password);
 
     /**
      * 登出
      *
      * @return 当前登录状态
      */
-    ResultMessage signOut();
+    ResultMessageBean signOut();
 
     /**
      * 注册用户
@@ -29,7 +29,7 @@ public interface UserService {
      * @param password 用户密码
      * @return 是否增加成功
      */
-    ResultMessage signUp(String username, String password);
+    ResultMessageBean signUp(String username, String password);
 
     /**
      * 重置密码
@@ -37,15 +37,15 @@ public interface UserService {
      * @param passwordBean 用户新旧密码
      * @return 重置密码结果状态
      */
-    ResultMessage resetPassword(PasswordBean passwordBean);
+    ResultMessageBean resetPassword(PasswordBean passwordBean);
 
     /**
      * 根据username查找用户
      *
-     * @param id 用户id
+     * @param userId 用户id
      * @return 查到的用户
      */
-    User getUserById(Long id);
+    UserInfoBean getUserById(Long userId);
 
     /**
      * 更新用户信息
@@ -53,12 +53,12 @@ public interface UserService {
      * @param user 新用户
      * @return 是否更新成功
      */
-    ResultMessage editUserInfo(User user);
+    ResultMessageBean editUserInfo(UserInfoBean user);
 
     /**
      * 获得当前登录的用户
      *
      * @return 当前登录用户
      */
-    User getUserInfo();
+    UserInfoBean getUserInfo();
 }
