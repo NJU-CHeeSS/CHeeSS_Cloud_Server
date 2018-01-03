@@ -64,7 +64,7 @@ public class JobController {
      */
     @ResponseBody
     @RequestMapping(
-            value = "/jobs",
+            value = "/jobs/search",
             params = {"keyword", "order", "size", "page"},
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
