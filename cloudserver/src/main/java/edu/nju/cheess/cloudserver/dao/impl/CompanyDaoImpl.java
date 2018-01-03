@@ -13,7 +13,7 @@ public class CompanyDaoImpl implements CompanyDao {
     }
 
     @Override
-    public List<Company> getCompanies(String keyword, String order, int size, int page) {
+    public List<Company> getCompanies(int page, int offset) {
         return null;
     }
 }
