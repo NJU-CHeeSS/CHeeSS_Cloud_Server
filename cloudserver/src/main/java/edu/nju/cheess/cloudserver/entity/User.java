@@ -1,63 +1,90 @@
 package edu.nju.cheess.cloudserver.entity;
 
-import java.time.LocalDate;
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
 public class User {
 
     /**
      * 用户id
      */
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name="user_id")
     private Long id;
 
     /**
      * 用户名
      */
+    @Basic
+    @Column(name="user_name")
     private String username;
 
     /**
      * 密码
      */
+    @Basic
+    @Column(name="password")
     private String password;
 
     /**
      * 性别，男为1，女为0
      */
+    @Basic
+    @Column(name="sex")
     private Integer sex;
 
     /**
-     * 城市列表
+     * 城市
      */
-    private List<String> cities;
+    @Basic
+    @Column(name="city")
+    private String city;
 
     /**
-     * 生日
+     * 年龄
      */
-    private LocalDate birthday;
+    @Basic
+    @Column(name="age")
+    private int age;
 
     /**
      * 专业
      */
+    @Basic
+    @Column(name="major")
     private String major;
 
     /**
      * 学历
      */
+    @Basic
+    @Column(name="diploma")
     private String diploma;
 
     /**
      * 技能
      */
+    @Basic
+    @Column(name="skill")
     private String skill;
 
     /**
      * 工作经验
      */
-    private String experience;
+    @Basic
+    @Column(name="experience")
+    private double experience;
 
     /**
      * 关注企业列表
      */
+    @ManyToMany
+    @JoinTable(
+            name="followCompany",
+            joinColumns=@JoinColumn(name="user_id", referencedColumnName="ID"),
+            inverseJoinColumns=@JoinColumn(name="company_id", referencedColumnName="ID"))
     private List<Company> followCompanies;
 
     public User(Long id, String username, String password) {
@@ -66,13 +93,13 @@ public class User {
         this.password = password;
     }
 
-    public User(Long id, String username, String password, Integer sex, List<String> cities, LocalDate birthday, String major, String diploma, String skill, String experience, List<Company> followCompanies) {
+    public User(Long id, String username, String password, Integer sex, String city, int age, String major, String diploma, String skill, double experience, List<Company> followCompanies) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.sex = sex;
-        this.cities = cities;
-        this.birthday = birthday;
+        this.city=city;
+        this.age=age;
         this.major = major;
         this.diploma = diploma;
         this.skill = skill;
@@ -112,20 +139,20 @@ public class User {
         this.sex = sex;
     }
 
-    public List<String> getCities() {
-        return cities;
+    public String getCity() {
+        return city;
     }
 
-    public void setCities(List<String> cities) {
-        this.cities = cities;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public LocalDate getBirthday() {
-        return birthday;
+    public int getAge() {
+        return age;
     }
 
-    public void setBirthday(LocalDate birthday) {
-        this.birthday = birthday;
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public String getMajor() {
@@ -152,11 +179,11 @@ public class User {
         this.skill = skill;
     }
 
-    public String getExperience() {
+    public double getExperience() {
         return experience;
     }
 
-    public void setExperience(String experience) {
+    public void setExperience(double experience) {
         this.experience = experience;
     }
 
