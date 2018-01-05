@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfoBean getUserById(Long userId) {
+    public UserInfoBean getUserByName(Long username) {
         return null;
     }
 

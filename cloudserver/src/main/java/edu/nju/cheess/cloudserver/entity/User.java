@@ -1,9 +1,9 @@
 package edu.nju.cheess.cloudserver.entity;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
+@Table(name = "user")
 public class User {
 
     /**
@@ -78,22 +78,40 @@ public class User {
     private double experience;
 
     /**
-     * 关注企业列表
+     * 邮箱
      */
-    @ManyToMany
-    @JoinTable(
-            name="followCompany",
-            joinColumns=@JoinColumn(name="user_id", referencedColumnName="ID"),
-            inverseJoinColumns=@JoinColumn(name="company_id", referencedColumnName="ID"))
-    private List<Company> followCompanies;
+    @Basic
+    @Column(name = "email")
+    private String email;
 
-    public User(Long id, String username, String password) {
+    /**
+     * 电话号码
+     */
+    @Basic
+    @Column(name = "telephone")
+    private String telephone;
+
+//    /**
+//     * 关注企业列表
+//     */
+//    @ManyToMany
+//    @JoinTable(
+//            name="followCompany",
+//            joinColumns=@JoinColumn(name="user_id", referencedColumnName="ID"),
+//            inverseJoinColumns=@JoinColumn(name="company_id", referencedColumnName="ID"))
+//    private List<Company> followCompanies;
+
+
+    public User() {
+    }
+
+    public User(String username, String password) {
         this.id = id;
         this.username = username;
         this.password = password;
     }
 
-    public User(Long id, String username, String password, Integer sex, String city, int age, String major, String diploma, String skill, double experience, List<Company> followCompanies) {
+    public User(String username, String password, Integer sex, String city, int age, String major, String diploma, String skill, double experience) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -104,7 +122,6 @@ public class User {
         this.diploma = diploma;
         this.skill = skill;
         this.experience = experience;
-        this.followCompanies = followCompanies;
     }
 
     public Long getId() {
@@ -187,11 +204,19 @@ public class User {
         this.experience = experience;
     }
 
-    public List<Company> getFollowCompanies() {
-        return followCompanies;
+    public String getEmail() {
+        return email;
     }
 
-    public void setFollowCompanies(List<Company> followCompanies) {
-        this.followCompanies = followCompanies;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
     }
 }

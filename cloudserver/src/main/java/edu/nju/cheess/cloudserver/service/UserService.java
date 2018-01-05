@@ -42,10 +42,10 @@ public interface UserService {
     /**
      * 根据username查找用户
      *
-     * @param userId 用户id
+     * @param username 用户name
      * @return 查到的用户
      */
-    UserInfoBean getUserById(Long userId);
+    UserInfoBean getUserByName(Long username);
 
     /**
      * 更新用户信息

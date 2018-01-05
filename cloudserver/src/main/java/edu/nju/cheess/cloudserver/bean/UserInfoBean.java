@@ -41,7 +41,7 @@ public class UserInfoBean {
     private String diploma;
 
     /**
-     * 技能
+     * 技能(多个skill用,分隔)
      */
     private String skill;
 
@@ -49,6 +49,16 @@ public class UserInfoBean {
      * 工作经验
      */
     private double experience;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 电话号码
+     */
+    private String telephone;
 
     /**
      * 关注企业列表
@@ -146,5 +156,21 @@ public class UserInfoBean {
 
     public void setFollowCompanies(List<Company> followCompanies) {
         this.followCompanies = followCompanies;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
     }
 }
