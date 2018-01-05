@@ -111,6 +111,18 @@ public class User {
         this.password = password;
     }
 
+    public User(String username, Integer sex, String city, int age, String major, String diploma, String skill, double experience) {
+        this.id = id;
+        this.username = username;
+        this.sex = sex;
+        this.city=city;
+        this.age=age;
+        this.major = major;
+        this.diploma = diploma;
+        this.skill = skill;
+        this.experience = experience;
+    }
+
     public User(String username, String password, Integer sex, String city, int age, String major, String diploma, String skill, double experience) {
         this.id = id;
         this.username = username;

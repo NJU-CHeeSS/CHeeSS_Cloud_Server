@@ -1,5 +1,6 @@
 package edu.nju.cheess.cloudserver.data;
 
+import edu.nju.cheess.cloudserver.bean.UserInfoBean;
 import edu.nju.cheess.cloudserver.dao.UserDao;
 import edu.nju.cheess.cloudserver.entity.User;
 import org.junit.Test;
@@ -19,23 +20,23 @@ public class UserDaoTest {
 
     @Test
     public void findUserByNameTest(){
-        User user=userDao.findByUsername("chen");
+        UserInfoBean user=userDao.getUserByName("chen");
         System.out.println(user.getAge());
     }
 
     @Test
     public void registerTest(){
-        userDao.save(new User("wang","123456"));
+        userDao.addUser(new User("wang","123456"));
     }
 
     @Test
     public void updatePasswordTest(){
-        userDao.updateUserPassword("wang","12345678");
+        userDao.updateUserPassword("wang","123456");
     }
 
     @Test
     public void updateUserInfoTest(){
-        userDao.updateUserInfo("wang",1,"南京",21,"软件工程","本科","java",1);
+        userDao.updateUserInfo(new User("wang",1,"南京",21,"软件工程","本科","java",1));
     }
 
 

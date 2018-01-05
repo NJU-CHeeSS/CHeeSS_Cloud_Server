@@ -1,45 +1,41 @@
 package edu.nju.cheess.cloudserver.dao;
 
+import edu.nju.cheess.cloudserver.bean.UserInfoBean;
 import edu.nju.cheess.cloudserver.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 
-public interface UserDao extends JpaRepository<User,Long>{
+public interface UserDao {
     /**
-     * 查询用户信息
-     * @param name
+     * 返回用户完整信息
+     * @param username
      * @return
      */
-    User findByUsername(String name);
+    UserInfoBean getUserByName(String username);
 
     /**
-     * 设置密码
-     * @param userName
+     * 更新用户信息
+     * @param user
+     */
+    void updateUserInfo(User user);
+
+    /**
+     * 修改密码
+     * @param username
      * @param password
      */
-    @Transactional
-    @Modifying
-    @Query("update User u set u.password=?2 where u.username=?1")
-    void updateUserPassword(String userName,String password);
+    void updateUserPassword(String username,String password);
 
     /**
-     * 更新信息
-     * @param userName
-     * @param sex
-     * @param city
-     * @param age
-     * @param major
-     * @param diploma
-     * @param skill
-     * @param experience
+     * 新增用户
+     * @param user
+     * @return
      */
-    @Transactional
-    @Modifying
-    @Query("update User u set u.sex=?2,u.city=?3,u.age=?4,u.major=?5," +
-            "u.diploma=?6,u.skill=?7,u.experience=?8 where u.username=?1")
-    void updateUserInfo(String userName, Integer sex, String city, int age, String major, String diploma, String skill, double experience);
+    Long addUser(User user);
 
-    //新增用户调用save方法
+    /**
+     * 关注企业
+     * @param username
+     * @param companyID
+     */
+    void followCompany(String username,String companyID);
+
 }
