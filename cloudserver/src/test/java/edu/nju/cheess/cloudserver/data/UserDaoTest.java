@@ -25,6 +25,11 @@ public class UserDaoTest {
     }
 
     @Test
+    public void findPasswordTest(){
+        System.out.println(userDao.getUserPasswordByName("chen").getPassword());
+    }
+
+    @Test
     public void registerTest(){
         userDao.addUser(new User("wang","123456"));
     }

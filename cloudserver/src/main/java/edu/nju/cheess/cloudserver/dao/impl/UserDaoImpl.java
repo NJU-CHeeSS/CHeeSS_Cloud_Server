@@ -38,7 +38,11 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public UserPasswordBean getUserPasswordByName(String username) {
-        return null;
+        User user=userRepository.findByUsername(username);
+        if(user==null){
+            return null;
+        }
+        return new UserPasswordBean(user.getId(),username,user.getPassword());
     }
 
     @Override
