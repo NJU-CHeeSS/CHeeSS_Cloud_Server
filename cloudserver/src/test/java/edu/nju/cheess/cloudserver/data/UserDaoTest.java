@@ -39,5 +39,10 @@ public class UserDaoTest {
         userDao.updateUserInfo(new User("wang",1,"南京",21,"软件工程","本科","java",1));
     }
 
+    @Test
+    public void followCompanyTest(){
+        userDao.followCompany("chen",1);
+    }
+
 
 }

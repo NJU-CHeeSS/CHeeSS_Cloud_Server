@@ -36,6 +36,6 @@ public interface UserDao {
      * @param username
      * @param companyID
      */
-    void followCompany(String username,String companyID);
+    void followCompany(String username,int companyID);
 
 }
