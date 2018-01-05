@@ -1,6 +1,7 @@
 package edu.nju.cheess.cloudserver.dao;
 
 import edu.nju.cheess.cloudserver.bean.UserInfoBean;
+import edu.nju.cheess.cloudserver.bean.UserPasswordBean;
 import edu.nju.cheess.cloudserver.entity.User;
 
 public interface UserDao {
@@ -10,6 +11,14 @@ public interface UserDao {
      * @return
      */
     UserInfoBean getUserByName(String username);
+
+    /**
+     * 返回用户密码
+     *
+     * @param username
+     * @return
+     */
+    UserPasswordBean getUserPasswordByName(String username);
 
     /**
      * 更新用户信息

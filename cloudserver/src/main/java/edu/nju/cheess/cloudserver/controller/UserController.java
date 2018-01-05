@@ -63,7 +63,7 @@ public class UserController {
             method = RequestMethod.POST
     )
     public ResultMessageBean signOut() {
-        return new ResultMessageBean(true);
+        return userService.signOut();
     }
 
     /**

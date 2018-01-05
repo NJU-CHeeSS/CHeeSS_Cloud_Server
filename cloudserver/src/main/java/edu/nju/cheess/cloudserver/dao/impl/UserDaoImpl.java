@@ -1,6 +1,7 @@
 package edu.nju.cheess.cloudserver.dao.impl;
 
 import edu.nju.cheess.cloudserver.bean.UserInfoBean;
+import edu.nju.cheess.cloudserver.bean.UserPasswordBean;
 import edu.nju.cheess.cloudserver.dao.UserDao;
 import edu.nju.cheess.cloudserver.entity.FollowCompany;
 import edu.nju.cheess.cloudserver.entity.User;
@@ -33,6 +34,11 @@ public class UserDaoImpl implements UserDao {
         //hbase中取数据，暂时为null
         return new UserInfoBean(user.getId(),user.getUsername(),user.getSex(),user.getCity(),
                 user.getAge(),user.getMajor(),user.getDiploma(),user.getSkill(),user.getExperience(),null);
+    }
+
+    @Override
+    public UserPasswordBean getUserPasswordByName(String username) {
+        return null;
     }
 
     @Override
