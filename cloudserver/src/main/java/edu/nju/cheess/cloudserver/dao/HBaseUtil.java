@@ -11,10 +11,10 @@ import java.io.IOException;
  * Created by CLL on 17/12/28.
  */
 public class HBaseUtil {
+
     private static Configuration configuration;
     private static Connection conn;
-    private static String tableName="";
-    private static Admin admin = null;
+    private static Admin admin;
 
     static {
         configuration = HBaseConfiguration.create();
@@ -27,7 +27,7 @@ public class HBaseUtil {
     private static void init() {
         try {
             conn = ConnectionFactory.createConnection(configuration);
-            admin= conn.getAdmin();
+            admin = conn.getAdmin();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -36,7 +36,7 @@ public class HBaseUtil {
     /**
      * 关闭连接
      */
-    public static void close() {
+    private static void close() {
         try {
             if (null != admin) {
                 admin.close();
@@ -53,7 +53,7 @@ public class HBaseUtil {
      * 创建表
      *
      * @param tableName 表名
-     * @param cols 列族列表
+     * @param cols      列族列表
      * @throws IOException
      */
     public static void createTable(String tableName, String[] cols) throws IOException {
@@ -114,10 +114,10 @@ public class HBaseUtil {
      * 插入单行
      *
      * @param tableName 表名称
-     * @param rowKey RowKey
+     * @param rowKey    RowKey
      * @param colFamily 列族
-     * @param col 列
-     * @param value 值
+     * @param col       列
+     * @param value     值
      * @throws IOException
      */
     public static void insert(String tableName, String rowKey, String colFamily, String col, String value) throws IOException {
@@ -127,9 +127,9 @@ public class HBaseUtil {
         put.addColumn(Bytes.toBytes(colFamily), Bytes.toBytes(col), Bytes.toBytes(value));
         table.put(put);
 
-		/*
-		 * 批量插入 List<Put> putList = new ArrayList<Put>(); puts.add(put); table.put(putList);
-		 */
+        /*
+         * 批量插入 List<Put> putList = new ArrayList<Put>(); puts.add(put); table.put(putList);
+         */
 
         table.close();
         close();
@@ -149,9 +149,9 @@ public class HBaseUtil {
             if (colFamily != null && col != null) {
                 del.addColumn(Bytes.toBytes(colFamily), Bytes.toBytes(col));
             }
-			/*
-			 * 批量删除 List<Delete> deleteList = new ArrayList<Delete>(); deleteList.add(delete); table.delete(deleteList);
-			 */
+            /*
+             * 批量删除 List<Delete> deleteList = new ArrayList<Delete>(); deleteList.add(delete); table.delete(deleteList);
+             */
             table.delete(del);
             table.close();
         }
@@ -162,9 +162,9 @@ public class HBaseUtil {
      * 根据RowKey获取数据
      *
      * @param tableName 表名称
-     * @param rowKey RowKey名称
+     * @param rowKey    RowKey名称
      * @param colFamily 列族名称
-     * @param col 列名称
+     * @param col       列名称
      * @throws IOException
      */
     public static void getData(String tableName, String rowKey, String colFamily, String col) throws IOException {
@@ -202,11 +202,11 @@ public class HBaseUtil {
     public static void showCell(Result result) {
         Cell[] cells = result.rawCells();
         for (Cell cell : cells) {
-            println("RowName: " + new String(CellUtil.cloneRow(cell)) + " ");
-            println("Timetamp: " + cell.getTimestamp() + " ");
-            println("column Family: " + new String(CellUtil.cloneFamily(cell)) + " ");
-            println("row Name: " + new String(CellUtil.cloneQualifier(cell)) + " ");
-            println("value: " + new String(CellUtil.cloneValue(cell)) + " ");
+            println("RowName:   " + new String(CellUtil.cloneRow(cell)) + " ");
+            println("Timetamp:  " + cell.getTimestamp() + " ");
+            println("Family:    " + new String(CellUtil.cloneFamily(cell)) + " ");
+            println("Qualifier: " + new String(CellUtil.cloneQualifier(cell)) + " ");
+            println("Value:     " + new String(CellUtil.cloneValue(cell)) + " ");
         }
     }
 
