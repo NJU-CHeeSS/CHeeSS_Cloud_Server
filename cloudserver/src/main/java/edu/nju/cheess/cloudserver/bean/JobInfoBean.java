@@ -1,6 +1,7 @@
 package edu.nju.cheess.cloudserver.bean;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class JobInfoBean {
 
@@ -42,7 +43,7 @@ public class JobInfoBean {
     /**
      * 发布日期
      */
-    private LocalDate releaseDate;
+    private LocalDateTime releaseDate;
 
     /**
      * 学历要求
@@ -52,7 +53,7 @@ public class JobInfoBean {
     /**
      * 招聘人数
      */
-    private Integer peopleNum;
+    private String peopleNum;
 
     /**
      * 最低工作经验年数
@@ -64,27 +65,7 @@ public class JobInfoBean {
      */
     private Integer maxExperience;
 
-    /**
-     * 工作类型
-     */
-    private String type;
-
-    /**
-     * 性别要求
-     */
-    private Integer sex;
-
-    /**
-     * 最低年龄要求
-     */
-    private Integer minAge;
-
-    /**
-     * 最高年龄要求
-     */
-    private Integer maxAge;
-
-    public JobInfoBean(Long jobId, String jobName, String companyName, String property, Integer minSalary, Integer maxSalary, String location, LocalDate date, String diploma, Integer peopleNum, Integer minExperience, Integer maxExperience, String type, Integer sex, Integer minAge, Integer maxAge) {
+    public JobInfoBean(Long jobId, String jobName, String companyName, String property, Integer minSalary, Integer maxSalary, String location, LocalDateTime date, String diploma, String peopleNum, Integer minExperience, Integer maxExperience) {
         this.jobId = jobId;
         this.jobName = jobName;
         this.companyName = companyName;
@@ -97,10 +78,6 @@ public class JobInfoBean {
         this.peopleNum = peopleNum;
         this.minExperience = minExperience;
         this.maxExperience = maxExperience;
-        this.type = type;
-        this.sex = sex;
-        this.minAge = minAge;
-        this.maxAge = maxAge;
     }
 
     public Long getJobId() {
@@ -159,11 +136,11 @@ public class JobInfoBean {
         this.location = location;
     }
 
-    public LocalDate getReleaseDate() {
+    public LocalDateTime getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(LocalDate releaseDate) {
+    public void setReleaseDate(LocalDateTime releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -175,11 +152,11 @@ public class JobInfoBean {
         this.diploma = diploma;
     }
 
-    public Integer getPeopleNum() {
+    public String getPeopleNum() {
         return peopleNum;
     }
 
-    public void setPeopleNum(Integer peopleNum) {
+    public void setPeopleNum(String peopleNum) {
         this.peopleNum = peopleNum;
     }
 
@@ -199,35 +176,4 @@ public class JobInfoBean {
         this.maxExperience = maxExperience;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Integer getSex() {
-        return sex;
-    }
-
-    public void setSex(Integer sex) {
-        this.sex = sex;
-    }
-
-    public Integer getMinAge() {
-        return minAge;
-    }
-
-    public void setMinAge(Integer minAge) {
-        this.minAge = minAge;
-    }
-
-    public Integer getMaxAge() {
-        return maxAge;
-    }
-
-    public void setMaxAge(Integer maxAge) {
-        this.maxAge = maxAge;
-    }
 }

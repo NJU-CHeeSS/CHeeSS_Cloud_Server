@@ -1,106 +1,66 @@
 package edu.nju.cheess.cloudserver.bean;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class ConditionBean {
     /**
      * 工作地点
      */
-    private String location;
+    private List<String> location;
 
     /**
-     * 发布日期
+     * 最早发布日期
      */
-    private LocalDate releaseDate;
+    private LocalDateTime earlyReleaseDate;
+
+    /**
+     * 最晚发布日期
+     */
+    private LocalDateTime lateReleaseDate;
 
     /**
      * 学历要求
      */
-    private String diploma;
+    private List<String> diploma;
 
-    /**
-     * 专业
-     */
-    private String major;
-
-    /**
-     * 年龄
-     */
-    private Integer age;
-
-    /**
-     * 技能
-     */
-    private String skill;
-
-    /**
-     * 关键词
-     */
-    private String keyword;
-
-    public ConditionBean(String location, LocalDate releaseDate, String diploma, String major, Integer age, String skill, String keyword) {
+    public ConditionBean(List<String> location, LocalDateTime earlyReleaseDate, LocalDateTime lateReleaseDate, List<String> diploma) {
         this.location = location;
-        this.releaseDate = releaseDate;
+        this.earlyReleaseDate = earlyReleaseDate;
+        this.lateReleaseDate = lateReleaseDate;
         this.diploma = diploma;
-        this.major = major;
-        this.age = age;
-        this.skill = skill;
-        this.keyword = keyword;
     }
 
-    public String getLocation() {
+    public List<String> getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(List<String> location) {
         this.location = location;
     }
 
-    public LocalDate getReleaseDate() {
-        return releaseDate;
+    public LocalDateTime getEarlyReleaseDate() {
+        return earlyReleaseDate;
     }
 
-    public void setReleaseDate(LocalDate releaseDate) {
-        this.releaseDate = releaseDate;
+    public void setEarlyReleaseDate(LocalDateTime earlyReleaseDate) {
+        this.earlyReleaseDate = earlyReleaseDate;
     }
 
-    public String getDiploma() {
+    public LocalDateTime getLateReleaseDate() {
+        return lateReleaseDate;
+    }
+
+    public void setLateReleaseDate(LocalDateTime lateReleaseDate) {
+        this.lateReleaseDate = lateReleaseDate;
+    }
+
+    public List<String> getDiploma() {
         return diploma;
     }
 
-    public void setDiploma(String diploma) {
+    public void setDiploma(List<String> diploma) {
         this.diploma = diploma;
     }
 
-    public String getMajor() {
-        return major;
-    }
-
-    public void setMajor(String major) {
-        this.major = major;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public String getSkill() {
-        return skill;
-    }
-
-    public void setSkill(String skill) {
-        this.skill = skill;
-    }
-
-    public String getKeyword() {
-        return keyword;
-    }
-
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
 }

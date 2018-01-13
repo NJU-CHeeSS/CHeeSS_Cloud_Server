@@ -5,6 +5,8 @@ import edu.nju.cheess.cloudserver.dao.JobDao;
 import edu.nju.cheess.cloudserver.entity.Job;
 import edu.nju.cheess.cloudserver.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -45,6 +47,11 @@ public class JobDaoImpl implements JobDao {
         job.setCompanyLink(data.get("company_link"));
 
         return job;
+    }
+
+    @Override
+    public Page<Job> getJobByCondition(String keyword, Pageable pageable) {
+        return null;
     }
 
     @Override

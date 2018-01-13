@@ -28,7 +28,8 @@ public class JobController {
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public JobInfoBean getJobInfo(@PathVariable Long jobId) {
-        return null;
+
+        return jobService.getJobInfo(jobId);
     }
 
     /**
@@ -50,7 +51,8 @@ public class JobController {
                                              @RequestParam(value = "order") String order,
                                              @RequestParam(value = "size") int size,
                                              @RequestParam(value = "page") int page) {
-        return null;
+
+        return jobService.getJobByKeyword(keyword, order, size, page);
     }
 
     /**
@@ -73,7 +75,8 @@ public class JobController {
                                                @RequestParam(value = "size") int size,
                                                @RequestParam(value = "page") int page,
                                                ConditionBean conditionBean) {
-        return null;
+
+        return jobService.getJobByCondition(keyword, order, size, page, conditionBean);
     }
 
     /**
@@ -87,7 +90,9 @@ public class JobController {
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public List<JobInfoBean> getRecommendedJobs(@PathVariable Long userId) {
-        return null;
+
+
+        return jobService.getRecommendedJobs(userId);
     }
 
     /**
@@ -102,7 +107,8 @@ public class JobController {
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public SalaryInfoBean analyzeSalary(@PathVariable Long jobId) {
-        return null;
+
+        return jobService.analyzeSalary(jobId);
     }
 
     /**
@@ -116,7 +122,8 @@ public class JobController {
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public TreatmentInfoBean analyzeTreatment() {
-        return null;
+
+        return jobService.analyzeTreatment();
     }
 
     /**
@@ -130,6 +137,7 @@ public class JobController {
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public CompareResultBean compareJobs(Long jobId1, Long jobId2) {
-        return null;
+
+        return jobService.compareJobs(jobId1, jobId2);
     }
 }
