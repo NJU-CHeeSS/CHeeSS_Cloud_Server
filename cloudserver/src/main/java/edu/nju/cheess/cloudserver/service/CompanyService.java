@@ -19,37 +19,9 @@ public interface CompanyService {
      * 搜索企业列表
      *
      * @param keyword 关键字
-     * @param order   按什么排序
      * @param size    每页大小
      * @param page    第几页
      * @return 分页列表
      */
-    Page<CompanyMiniBean> findCompanyByKeyword(String keyword, String order, int size, int page);
-
-    /**
-     * 关注企业
-     *
-     * @param userId    用户id
-     * @param companyId 企业id
-     * @return 关注结果
-     */
-    ResultMessageBean follow(Long userId, Long companyId);
-
-    /**
-     * 取关企业
-     *
-     * @param userId    用户id
-     * @param companyId 企业id
-     * @return 取关结果
-     */
-    ResultMessageBean cancelFollow(Long userId, Long companyId);
-
-    /**
-     * 获得是否关注企业
-     *
-     * @param userId    用户id
-     * @param companyId 企业id
-     * @return 是否关注企业
-     */
-    boolean checkFollow(Long userId, Long companyId);
+    Page<CompanyMiniBean> findCompanyByKeyword(String keyword, int size, int page);
 }
