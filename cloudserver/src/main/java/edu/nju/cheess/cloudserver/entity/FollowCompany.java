@@ -15,12 +15,12 @@ public class FollowCompany {
 
     @Id
     @Column(name = "company_id")
-    private int companyID;
+    private Long companyID;
 
     public FollowCompany() {
     }
 
-    public FollowCompany(Long userID, int companyID) {
+    public FollowCompany(Long userID, Long companyID) {
         this.userID = userID;
         this.companyID = companyID;
     }
@@ -33,11 +33,11 @@ public class FollowCompany {
         this.userID = userID;
     }
 
-    public int getCompanyID() {
+    public Long getCompanyID() {
         return companyID;
     }
 
-    public void setCompanyID(int companyID) {
+    public void setCompanyID(Long companyID) {
         this.companyID = companyID;
     }
 }

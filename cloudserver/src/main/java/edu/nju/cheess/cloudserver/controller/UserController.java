@@ -112,4 +112,48 @@ public class UserController {
         return userService.editUserInfo(user);
     }
 
+    /**
+     * 关注企业
+     *
+     * @param companyId 企业id
+     * @return 关注结果
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/follow",
+            method = RequestMethod.GET)
+    public ResultMessageBean follow(Long companyId) {
+
+        return userService.follow(getUserInfo().getUserId(), companyId);
+    }
+
+    /**
+     * 取关企业
+     *
+     * @param companyId 企业id
+     * @return 取关结果
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/unfollow",
+            method = RequestMethod.GET)
+    public ResultMessageBean cancelFollow(Long companyId) {
+
+        return userService.cancelFollow(getUserInfo().getUserId(), companyId);
+    }
+
+    /**
+     * 获得是否关注企业
+     *
+     * @param companyId 企业id
+     * @return 是否关注企业
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/checkFollow",
+            method = RequestMethod.GET)
+    public boolean checkFollow(Long companyId) {
+
+        return userService.checkFollow(getUserInfo().getUserId(), companyId);
+    }
 }

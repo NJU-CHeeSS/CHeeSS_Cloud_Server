@@ -24,36 +24,36 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public UserInfoBean getUserByName(String userName) {
-        User user=userRepository.findByUsername(userName);
-        if(user==null){
+        User user = userRepository.findByUsername(userName);
+        if (user == null) {
             return null;
         }
-        List<Integer> companyIDs=followCompanyRepository.findCompanyIDs(user.getId());
+        List<Integer> companyIDs = followCompanyRepository.findCompanyIDs(user.getId());
         System.out.println(companyIDs.size());
         //TODO
         //hbase中取数据，暂时为null
-        return new UserInfoBean(user.getId(),user.getUsername(),user.getSex(),user.getCity(),
-                user.getAge(),user.getMajor(),user.getDiploma(),user.getSkill(),user.getExperience(),null);
+        return new UserInfoBean(user.getId(), user.getUsername(), user.getSex(), user.getCity(),
+                user.getAge(), user.getMajor(), user.getDiploma(), user.getSkill(), user.getExperience(), null);
     }
 
     @Override
     public UserPasswordBean getUserPasswordByName(String username) {
-        User user=userRepository.findByUsername(username);
-        if(user==null){
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
             return null;
         }
-        return new UserPasswordBean(user.getId(),username,user.getPassword());
+        return new UserPasswordBean(user.getId(), username, user.getPassword());
     }
 
     @Override
     public void updateUserInfo(User user) {
-        userRepository.updateUserInfo(user.getUsername(),user.getSex(),user.getCity(),
-                user.getAge(),user.getMajor(),user.getDiploma(),user.getSkill(),user.getExperience());
+        userRepository.updateUserInfo(user.getUsername(), user.getSex(), user.getCity(),
+                user.getAge(), user.getMajor(), user.getDiploma(), user.getSkill(), user.getExperience());
     }
 
     @Override
     public void updateUserPassword(String username, String password) {
-        userRepository.updateUserPassword(username,password);
+        userRepository.updateUserPassword(username, password);
     }
 
     @Override
@@ -62,8 +62,18 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void followCompany(String username, int companyID) {
-        User user=userRepository.findByUsername(username);
-        followCompanyRepository.save(new FollowCompany(user.getId(),companyID));
+    public void followCompany(Long userId, Long companyID) {
+        followCompanyRepository.save(new FollowCompany(userId, companyID));
+    }
+
+    @Override
+    public void cancelFollowCompany(Long userId, Long companyID) {
+        followCompanyRepository.delete(new FollowCompany(userId, companyID));
+    }
+
+    @Override
+    public boolean isFollowCompany(Long userId, Long companyID) {
+        // TODO
+        return false;
     }
 }

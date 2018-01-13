@@ -61,4 +61,31 @@ public interface UserService {
      * @return 当前用户信息
      */
     UserInfoBean getUserInfo();
+
+    /**
+     * 关注企业
+     *
+     * @param userId    用户
+     * @param companyId 企业id
+     * @return 关注结果
+     */
+    ResultMessageBean follow(Long userId, Long companyId);
+
+    /**
+     * 取关企业
+     *
+     * @param userId    用户
+     * @param companyId 企业id
+     * @return 取关结果
+     */
+    ResultMessageBean cancelFollow(Long userId, Long companyId);
+
+    /**
+     * 获得是否关注企业
+     *
+     * @param userId    用户
+     * @param companyId 企业id
+     * @return 是否关注企业
+     */
+    boolean checkFollow(Long userId, Long companyId);
 }

@@ -7,6 +7,7 @@ import edu.nju.cheess.cloudserver.entity.User;
 public interface UserDao {
     /**
      * 返回用户完整信息
+     *
      * @param username
      * @return
      */
@@ -22,19 +23,22 @@ public interface UserDao {
 
     /**
      * 更新用户信息
+     *
      * @param user
      */
     void updateUserInfo(User user);
 
     /**
      * 修改密码
+     *
      * @param username
      * @param password
      */
-    void updateUserPassword(String username,String password);
+    void updateUserPassword(String username, String password);
 
     /**
      * 新增用户
+     *
      * @param user
      * @return
      */
@@ -42,9 +46,26 @@ public interface UserDao {
 
     /**
      * 关注企业
-     * @param username
+     *
+     * @param userId
      * @param companyID
      */
-    void followCompany(String username,int companyID);
+    void followCompany(Long userId, Long companyID);
+
+    /**
+     * 关注企业
+     *
+     * @param userId
+     * @param companyID
+     */
+    void cancelFollowCompany(Long userId, Long companyID);
+
+    /**
+     * 关注企业
+     *
+     * @param userId
+     * @param companyID
+     */
+    boolean isFollowCompany(Long userId, Long companyID);
 
 }

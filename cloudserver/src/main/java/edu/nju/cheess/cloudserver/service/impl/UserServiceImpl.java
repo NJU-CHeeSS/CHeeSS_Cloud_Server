@@ -99,4 +99,21 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
+
+    @Override
+    public ResultMessageBean follow(Long userId, Long companyId) {
+        userDao.followCompany(userId, companyId);
+        return new ResultMessageBean(true);
+    }
+
+    @Override
+    public ResultMessageBean cancelFollow(Long userId, Long companyId) {
+        userDao.cancelFollowCompany(userId, companyId);
+        return new ResultMessageBean(true);
+    }
+
+    @Override
+    public boolean checkFollow(Long userId, Long companyId) {
+        return userDao.isFollowCompany(userId, companyId);
+    }
 }
