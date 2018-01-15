@@ -6,8 +6,7 @@ import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
-import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.filter.PageFilter;
+import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +33,7 @@ public class HBaseHelper {
         configuration.set("hbase.root.dir", "hdfs://40.125.162.122:9000/opt/hbase/database");
     }
 
-    public void init() {
+    public synchronized void init() {
         try {
             conn = ConnectionFactory.createConnection(configuration);
             admin = conn.getAdmin();
@@ -43,7 +42,7 @@ public class HBaseHelper {
         }
     }
 
-    public void close() {
+    public synchronized void close() {
         try {
             if (null != admin) {
                 admin.close();
@@ -56,6 +55,23 @@ public class HBaseHelper {
         }
     }
 
+    private Map<String, String> resultToMap(Result result) {
+        Map<String, String> map = new HashMap<>();
+        for (Cell cell : result.rawCells()) {
+            map.put("rowKey", new String(CellUtil.cloneRow(cell)));
+            map.put(new String(CellUtil.cloneQualifier(cell)), new String(CellUtil.cloneValue(cell)));
+        }
+        return map;
+    }
+
+    private List<Map<String, String>> resultScannerToMapList(ResultScanner scanner) {
+        List<Map<String, String>> mapList = new ArrayList<>();
+        for (Result result : scanner) {
+            mapList.add(resultToMap(result));
+        }
+        return mapList;
+    }
+
     /**
      * 根据RowKey获取数据
      *
@@ -66,7 +82,7 @@ public class HBaseHelper {
      * @return          Result
      */
     public Map<String, String> getData(String tableName, String rowKey, String colFamily, String col) {
-        Map<String, String> dataMap = new HashMap<>();
+        Map<String, String> data = new HashMap<>();
         try {
             Table table = conn.getTable(TableName.valueOf(tableName));
             Get get = new Get(Bytes.toBytes(rowKey));
@@ -77,15 +93,12 @@ public class HBaseHelper {
                 get.addColumn(Bytes.toBytes(colFamily), Bytes.toBytes(col));
             }
             Result result = table.get(get);
-            for (Cell cell : result.rawCells()) {
-                dataMap.put("rowKey", new String(CellUtil.cloneRow(cell)));
-                dataMap.put(new String(CellUtil.cloneQualifier(cell)), new String(CellUtil.cloneValue(cell)));
-            }
+            data = resultToMap(result);
             table.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return dataMap;
+        return data;
     }
 
     /**
@@ -115,7 +128,7 @@ public class HBaseHelper {
         Filter filter = new PageFilter(pageSize);
         try {
             Table table = conn.getTable(TableName.valueOf(tableName));
-
+            // scan 前 page - 1 页
             for (int i = 0; i < pageNumber - 1; i++) {
                 Scan scan = new Scan();
                 scan.setFilter(filter);
@@ -135,26 +148,50 @@ public class HBaseHelper {
                     return mapList;
                 }
             }
-
+            // 获取page页数据
             Scan scan = new Scan();
             scan.setFilter(filter);
             if (lastRow != null) {
                 scan.setStartRow(Bytes.add(lastRow, POSTFIX));
             }
             ResultScanner scanner = table.getScanner(scan);
-            for (Result result : scanner) {
-                Map<String, String> map = new HashMap<>();
-                for (Cell cell : result.rawCells()) {
-                    map.put("rowKey", new String(CellUtil.cloneRow(cell)));
-                    map.put(new String(CellUtil.cloneQualifier(cell)), new String(CellUtil.cloneValue(cell)));
-                }
-                mapList.add(map);
-            }
-
+            mapList = resultScannerToMapList(scanner);
+            scanner.close();
+            table.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return mapList;
+    }
+
+    /**
+     * 列值查询（采用子串匹配比较器）
+     * @param tableName     表名
+     * @param columnFamily  列族
+     * @param column        列名
+     * @param value         值
+     * @return              Result
+     */
+    public List<Map<String, String>> getDataByColumnValue(String tableName, String columnFamily, String column, String value) {
+        List<Map<String, String>> mapList = new ArrayList<>();
+        try {
+            Table table = conn.getTable(TableName.valueOf(tableName));
+            // 设置SingleColumnValueFilter
+            Filter filter = new SingleColumnValueFilter(
+                    Bytes.toBytes(columnFamily),
+                    Bytes.toBytes(column),
+                    CompareFilter.CompareOp.EQUAL,
+                    new SubstringComparator(value));
+            Scan scan = new Scan();
+            scan.setFilter(filter);
+            ResultScanner scanner = table.getScanner(scan);
+            mapList = resultScannerToMapList(scanner);
+            scanner.close();
+            table.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return mapList;
     }
 

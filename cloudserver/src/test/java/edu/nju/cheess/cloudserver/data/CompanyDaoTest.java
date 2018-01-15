@@ -25,4 +25,9 @@ public class CompanyDaoTest {
         System.out.println(company.getSize());
     }
 
+    @Test
+    public void testSearch() {
+        companyDao.getCompanyByCondition("广告有限公司", null);
+    }
+
 }

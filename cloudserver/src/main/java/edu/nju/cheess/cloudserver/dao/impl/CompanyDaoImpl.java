@@ -49,6 +49,17 @@ public class CompanyDaoImpl implements CompanyDao {
     @Override
     public Page<Company> getCompanyByCondition(String keyword, Pageable pageable) {
         // TODO
+        hBaseHelper.init();
+        List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(TABLE_NAME, "info", "name", keyword);
+        hBaseHelper.close();
+
+        List<Company> companies = dataList.stream().map(this::getCompanyEntityByMap).collect(Collectors.toList());
+        for (Company company : companies) {
+            System.out.println(company.getId());
+            System.out.println(company.getName());
+            System.out.println();
+        }
+
         return null;
     }
 
