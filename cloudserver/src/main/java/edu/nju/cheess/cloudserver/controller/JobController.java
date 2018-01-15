@@ -140,4 +140,19 @@ public class JobController {
 
         return jobService.compareJobs(jobId1, jobId2);
     }
+
+    /**
+     * 获得职位技能需求信息
+     *
+     * @return 职位技能需求信息
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/jobs/skill",
+            method = RequestMethod.GET,
+            produces = {"application/json; charset=UTF-8"})
+    public String analyseSkills(Long jobId) {
+
+        return jobService.analyseSkills(jobId);
+    }
 }

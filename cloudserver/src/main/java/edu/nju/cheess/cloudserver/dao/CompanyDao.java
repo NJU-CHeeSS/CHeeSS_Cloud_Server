@@ -1,6 +1,7 @@
 package edu.nju.cheess.cloudserver.dao;
 
 import edu.nju.cheess.cloudserver.entity.Company;
+import edu.nju.cheess.cloudserver.entity.Job;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -34,4 +35,21 @@ public interface CompanyDao {
      * @return 分页列表
      */
     List<Company> getCompanies(int page, int offset);
+
+
+    /**
+     * 获得企业职位列表
+     *
+     * @param id 企业id
+     * @return 职位列表
+     */
+    List<Job> getJobs(Long id);
+
+
+    /**
+     * 获得数据库中关注度比较高的几个企业
+     *
+     * @return 企业列表
+     */
+    List<Company> getPopularCompanies();
 }

@@ -1,5 +1,7 @@
 package edu.nju.cheess.cloudserver.bean;
 
+import java.util.List;
+
 public class CompanyInfoBean {
 
     /**
@@ -32,13 +34,19 @@ public class CompanyInfoBean {
      */
     private String introduction;
 
-    public CompanyInfoBean(Long companyId, String name, String type, String industry, String scale, String introduction) {
+    /**
+     * 企业关键词
+     */
+    private List<String> keywords;
+
+    public CompanyInfoBean(Long companyId, String name, String type, String industry, String scale, String introduction, List<String> keywords) {
         this.companyId = companyId;
         this.name = name;
         this.type = type;
         this.industry = industry;
         this.scale = scale;
         this.introduction = introduction;
+        this.keywords = keywords;
     }
 
     public Long getCompanyId() {
@@ -87,5 +95,13 @@ public class CompanyInfoBean {
 
     public void setIntroduction(String introduction) {
         this.introduction = introduction;
+    }
+
+    public List<String> getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(List<String> keywords) {
+        this.keywords = keywords;
     }
 }

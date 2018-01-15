@@ -1,12 +1,16 @@
 package edu.nju.cheess.cloudserver.controller;
 
+import edu.nju.cheess.cloudserver.bean.CompanyAnalyseBean;
 import edu.nju.cheess.cloudserver.bean.CompanyInfoBean;
 import edu.nju.cheess.cloudserver.bean.CompanyMiniBean;
+import edu.nju.cheess.cloudserver.bean.JobInfoBean;
 import edu.nju.cheess.cloudserver.service.CompanyService;
 import edu.nju.cheess.cloudserver.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/companies")
@@ -51,4 +55,82 @@ public class CompanyController {
         return companyService.findCompanyByKeyword(keyword, size, page);
     }
 
+    /**
+     * 获得企业职位列表
+     *
+     * @param companyId 企业id
+     * @return 企业职位列表
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/{companyId}/jobs",
+            method = RequestMethod.GET,
+            produces = {"application/json; charset=UTF-8"})
+    public List<JobInfoBean> getJobs(@PathVariable Long companyId) {
+
+        return companyService.getJobs(companyId);
+    }
+
+    /**
+     * 获得热门企业
+     *
+     * @return 热门企业列表
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "",
+            method = RequestMethod.GET,
+            produces = {"application/json; charset=UTF-8"})
+    public List<CompanyMiniBean> getPopularCompanies() {
+
+        return companyService.getPopularCompanies();
+    }
+
+    /**
+     * 获得相关企业
+     *
+     * @param companyId 企业id
+     * @return 相关企业信息
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/{companyId}/relate",
+            method = RequestMethod.GET,
+            produces = {"application/json; charset=UTF-8"})
+    public List<CompanyMiniBean> getRelatedCompanies(@PathVariable Long companyId) {
+
+        return companyService.getRelatedCompanies(companyId);
+    }
+
+    /**
+     * 获得同类行业企业排行
+     *
+     * @param industry 行业名
+     * @return 同类行业企业排行
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/rank/{industry}",
+            method = RequestMethod.GET,
+            produces = {"application/json; charset=UTF-8"})
+    public List<CompanyMiniBean> getCompaniesRank(@PathVariable String industry) {
+
+        return companyService.getCompaniesRank(industry);
+    }
+
+    /**
+     * 企业水平分析
+     *
+     * @param companyId 企业id
+     * @return 企业水平分析
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/{companyId}/analyse",
+            method = RequestMethod.GET,
+            produces = {"application/json; charset=UTF-8"})
+    public CompanyAnalyseBean getCompanyAnalyse(@PathVariable Long companyId) {
+
+        return companyService.getCompanyAnalyse(companyId);
+    }
 }

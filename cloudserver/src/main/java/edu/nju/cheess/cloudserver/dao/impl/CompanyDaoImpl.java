@@ -3,6 +3,7 @@ package edu.nju.cheess.cloudserver.dao.impl;
 import edu.nju.cheess.cloudserver.dao.CompanyDao;
 import edu.nju.cheess.cloudserver.dao.HBaseHelper;
 import edu.nju.cheess.cloudserver.entity.Company;
+import edu.nju.cheess.cloudserver.entity.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,6 +50,16 @@ public class CompanyDaoImpl implements CompanyDao {
     @Override
     public List<Company> getCompanies(int page, int offset) {
         // TODO
+        return null;
+    }
+
+    @Override
+    public List<Job> getJobs(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<Company> getPopularCompanies() {
         return null;
     }
 }

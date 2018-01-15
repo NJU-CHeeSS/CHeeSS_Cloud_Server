@@ -97,4 +97,9 @@ public class JobServiceImpl implements JobService {
     public CompareResultBean compareJobs(Long jobId1, Long jobId2) {
         return null;
     }
+
+    @Override
+    public String analyseSkills(Long jobId) {
+        return null;
+    }
 }
