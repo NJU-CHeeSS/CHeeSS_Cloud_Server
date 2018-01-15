@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class JobDaoImpl implements JobDao {
@@ -20,17 +21,13 @@ public class JobDaoImpl implements JobDao {
     @Autowired
     private HBaseHelper hBaseHelper;
 
-    @Override
-    public Job getJobById(Long id) {
-        hBaseHelper.init();
-        Map<String, String> data = hBaseHelper.getData(TABLE_NAME, String.valueOf(id));
-        hBaseHelper.close();
-
+    private Job getJobEntityByMap(Map<String, String> data) {
         if (data.get("rowKey") == null) {
             return null;
         }
 
         Job job = new Job();
+
         job.setId(Long.valueOf(data.get("rowKey")));
         job.setTitle(data.get("title"));
         job.setLocation(data.get("location"));
@@ -50,12 +47,27 @@ public class JobDaoImpl implements JobDao {
     }
 
     @Override
+    public Job getJobById(Long id) {
+        hBaseHelper.init();
+        Map<String, String> data = hBaseHelper.getData(TABLE_NAME, String.valueOf(id));
+        hBaseHelper.close();
+
+        return getJobEntityByMap(data);
+
+    }
+
+    @Override
     public Page<Job> getJobByCondition(String keyword, Pageable pageable) {
         return null;
     }
 
     @Override
-    public List<Job> getJobs(int page, int offset) {
-        return null;
+    public List<Job> getJobs(Pageable pageable) {
+        hBaseHelper.init();
+        List<Map<String, String>> dataList = hBaseHelper.getDataByPage(TABLE_NAME, pageable.getPageSize(), pageable.getPageNumber());
+        hBaseHelper.close();
+
+        return dataList.stream().map(this::getJobEntityByMap).collect(Collectors.toList());
     }
+
 }

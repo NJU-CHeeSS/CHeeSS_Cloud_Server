@@ -19,18 +19,18 @@ public interface JobDao {
     /**
      * 根据关键词和条件分页获得职位列表
      *
-     * @param keyword
-     * @param pageable
-     * @return 企业信息列表
+     * @param keyword   关键词
+     * @param pageable  分页信息
+     * @return          职业列表
      */
     Page<Job> getJobByCondition(String keyword, Pageable pageable);
 
     /**
-     * 搜索职位列表
+     * 获取职业
      *
-     * @param page   page
-     * @param offset offset
-     * @return 分页列表
+     * @param pageable  分页信息
+     * @return          职业列表
      */
-    List<Job> getJobs(int page, int offset);
+    List<Job> getJobs(Pageable pageable);
+
 }

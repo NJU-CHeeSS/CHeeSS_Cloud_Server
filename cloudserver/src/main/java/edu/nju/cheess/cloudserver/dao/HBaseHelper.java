@@ -6,11 +6,15 @@ import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.PageFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -95,5 +99,63 @@ public class HBaseHelper {
         return getData(tableName, rowKey, null, null);
     }
 
+    /**
+     * 分页查询
+     *
+     * @param tableName     表名
+     * @param pageSize      页大小
+     * @param pageNumber    页数
+     * @return              Result
+     */
+    public List<Map<String, String>> getDataByPage(String tableName, int pageSize, int pageNumber) {
+        List<Map<String, String>> mapList = new ArrayList<>();
+        byte[] POSTFIX = new byte[]{ 0x00 };
+        byte[] lastRow = null;
+
+        Filter filter = new PageFilter(pageSize);
+        try {
+            Table table = conn.getTable(TableName.valueOf(tableName));
+
+            for (int i = 0; i < pageNumber - 1; i++) {
+                Scan scan = new Scan();
+                scan.setFilter(filter);
+                if (lastRow != null) {
+                    byte[] startRow = Bytes.add(lastRow, POSTFIX);
+                    scan.setStartRow(startRow);
+                }
+                ResultScanner scanner = table.getScanner(scan);
+                int localRows = 0;
+                for (Result result : scanner) {
+                    localRows++;
+                    lastRow = result.getRow();
+                }
+                scanner.close();
+                // pageNumber超出总页数
+                if (localRows < pageSize) {
+                    return mapList;
+                }
+            }
+
+            Scan scan = new Scan();
+            scan.setFilter(filter);
+            if (lastRow != null) {
+                scan.setStartRow(Bytes.add(lastRow, POSTFIX));
+            }
+            ResultScanner scanner = table.getScanner(scan);
+            for (Result result : scanner) {
+                Map<String, String> map = new HashMap<>();
+                for (Cell cell : result.rawCells()) {
+                    map.put("rowKey", new String(CellUtil.cloneRow(cell)));
+                    map.put(new String(CellUtil.cloneQualifier(cell)), new String(CellUtil.cloneValue(cell)));
+                }
+                mapList.add(map);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return mapList;
+    }
 
 }

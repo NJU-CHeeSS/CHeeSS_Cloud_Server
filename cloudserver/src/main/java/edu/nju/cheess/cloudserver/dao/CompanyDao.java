@@ -20,22 +20,19 @@ public interface CompanyDao {
     /**
      * 根据关键词和条件分页获得企业列表
      *
-     * @param keyword
-     * @param pageable
+     * @param keyword   关键词
+     * @param pageable  分页信息
      * @return 企业信息列表
      */
     Page<Company> getCompanyByCondition(String keyword, Pageable pageable);
 
-
     /**
-     * 搜索企业列表
+     * 获取企业
      *
-     * @param page   page
-     * @param offset offset
-     * @return 分页列表
+     * @param pageable  分页信息
+     * @return          企业列表
      */
-    List<Company> getCompanies(int page, int offset);
-
+    List<Company> getCompanies(Pageable pageable);
 
     /**
      * 获得企业职位列表
@@ -45,11 +42,11 @@ public interface CompanyDao {
      */
     List<Job> getJobs(Long id);
 
-
     /**
      * 获得数据库中关注度比较高的几个企业
      *
      * @return 企业列表
      */
     List<Company> getPopularCompanies();
+
 }

@@ -46,7 +46,7 @@ public class UserDaoTest {
 
     @Test
     public void followCompanyTest(){
-        userDao.followCompany("chen",1);
+//        userDao.followCompany("chen",1);
     }
 
 

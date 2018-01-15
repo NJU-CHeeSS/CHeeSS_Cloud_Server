@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class CompanyDaoImpl implements CompanyDao {
@@ -20,12 +21,7 @@ public class CompanyDaoImpl implements CompanyDao {
 
     private static final String TABLE_NAME = "cloud:company";
 
-    @Override
-    public Company getCompanyById(Long id) {
-        hBaseHelper.init();
-        Map<String, String> data = hBaseHelper.getData(TABLE_NAME, String.valueOf(id));
-        hBaseHelper.close();
-
+    private Company getCompanyEntityByMap(Map<String, String> data) {
         if (data.get("rowKey") == null) {
             return null;
         }
@@ -42,15 +38,27 @@ public class CompanyDaoImpl implements CompanyDao {
     }
 
     @Override
+    public Company getCompanyById(Long id) {
+        hBaseHelper.init();
+        Map<String, String> data = hBaseHelper.getData(TABLE_NAME, String.valueOf(id));
+        hBaseHelper.close();
+
+        return getCompanyEntityByMap(data);
+    }
+
+    @Override
     public Page<Company> getCompanyByCondition(String keyword, Pageable pageable) {
         // TODO
         return null;
     }
 
     @Override
-    public List<Company> getCompanies(int page, int offset) {
-        // TODO
-        return null;
+    public List<Company> getCompanies(Pageable pageable) {
+        hBaseHelper.init();
+        List<Map<String, String>> mapList = hBaseHelper.getDataByPage(TABLE_NAME, pageable.getPageSize(), pageable.getPageNumber());
+        hBaseHelper.close();
+
+        return mapList.stream().map(this::getCompanyEntityByMap).collect(Collectors.toList());
     }
 
     @Override
