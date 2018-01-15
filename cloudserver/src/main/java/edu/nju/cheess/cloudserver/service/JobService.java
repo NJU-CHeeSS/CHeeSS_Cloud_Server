@@ -60,16 +60,16 @@ public interface JobService {
     TreatmentInfoBean analyzeTreatment();
 
     /**
-     * 获得职位技能需求信息
+     * 职位比较
      *
-     * @return 职位技能需求信息
+     * @return 职位比较信息
      */
     CompareResultBean compareJobs(Long jobId1, Long jobId2);
 
     /**
-     * 获得待遇分析信息
+     * 获得职位技能需求信息
      *
-     * @return 待遇分析信息
+     * @return 职位技能需求信息
      */
     String analyseSkills(Long jobId);
 }
