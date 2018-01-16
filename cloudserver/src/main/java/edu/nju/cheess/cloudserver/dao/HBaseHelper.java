@@ -128,8 +128,7 @@ public class HBaseHelper {
         Filter filter = new PageFilter(pageSize);
         try {
             Table table = conn.getTable(TableName.valueOf(tableName));
-            // scan 前 page - 1 页
-            for (int i = 0; i < pageNumber - 1; i++) {
+            for (int i = 1; i <= pageNumber; i++) {
                 Scan scan = new Scan();
                 scan.setFilter(filter);
                 if (lastRow != null) {
@@ -137,26 +136,24 @@ public class HBaseHelper {
                     scan.setStartRow(startRow);
                 }
                 ResultScanner scanner = table.getScanner(scan);
-                int localRows = 0;
-                for (Result result : scanner) {
-                    localRows++;
-                    lastRow = result.getRow();
+                if (i != pageNumber) {
+                    // 未到达最后一页，记录本次Scan的lastRow
+                    int localRows = 0;
+                    for (Result result : scanner) {
+                        localRows++;
+                        lastRow = result.getRow();
+                    }
+                    // pageNumber超出总页数
+                    if (localRows < pageSize) {
+                        scanner.close();
+                        break;
+                    }
+                } else {
+                    // 获取此页信息
+                    mapList = resultScannerToMapList(scanner);
                 }
                 scanner.close();
-                // pageNumber超出总页数
-                if (localRows < pageSize) {
-                    return mapList;
-                }
             }
-            // 获取page页数据
-            Scan scan = new Scan();
-            scan.setFilter(filter);
-            if (lastRow != null) {
-                scan.setStartRow(Bytes.add(lastRow, POSTFIX));
-            }
-            ResultScanner scanner = table.getScanner(scan);
-            mapList = resultScannerToMapList(scanner);
-            scanner.close();
             table.close();
         } catch (IOException e) {
             e.printStackTrace();

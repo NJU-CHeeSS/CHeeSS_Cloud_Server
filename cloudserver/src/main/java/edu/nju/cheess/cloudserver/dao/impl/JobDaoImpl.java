@@ -58,6 +58,17 @@ public class JobDaoImpl implements JobDao {
 
     @Override
     public Page<Job> getJobByCondition(String keyword, Pageable pageable) {
+        hBaseHelper.init();
+        List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(TABLE_NAME, "info", "name", keyword);
+        hBaseHelper.close();
+
+        List<Job> jobs = dataList.stream().map(this::getJobEntityByMap).collect(Collectors.toList());
+        for (Job job : jobs) {
+            System.out.println(job.getId());
+            System.out.println(job.getTitle());
+            System.out.println();
+        }
+
         return null;
     }
 
