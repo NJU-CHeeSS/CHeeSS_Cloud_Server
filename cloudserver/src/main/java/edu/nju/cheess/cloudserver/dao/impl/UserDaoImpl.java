@@ -63,12 +63,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void followCompany(Long userId, Long companyID) {
-        followCompanyRepository.save(new FollowCompany(userId, companyID));
+        followCompanyRepository.save(new FollowCompany(userId, companyID.intValue()));
     }
 
     @Override
     public void cancelFollowCompany(Long userId, Long companyID) {
-        followCompanyRepository.delete(new FollowCompany(userId, companyID));
+        followCompanyRepository.delete(new FollowCompany(userId, companyID.intValue()));
     }
 
     @Override
