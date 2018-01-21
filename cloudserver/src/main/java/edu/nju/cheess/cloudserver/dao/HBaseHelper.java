@@ -28,9 +28,9 @@ public class HBaseHelper {
     public HBaseHelper() {
         configuration = HBaseConfiguration.create();
         configuration.set("hbase.zookeeper.property.clientPort", "2181");
-        configuration.set("hbase.zookeeper.quorum", "40.125.162.122,40.125.214.197,40.125.163.24");
-        configuration.set("hbase.master", "40.125.162.122:16000");
-        configuration.set("hbase.root.dir", "hdfs://40.125.162.122:9000/opt/hbase/database");
+        configuration.set("hbase.zookeeper.quorum", "40.125.167.161,40.125.212.93,40.125.215.227");
+        configuration.set("hbase.master", "40.125.167.161:16000");
+        configuration.set("hbase.root.dir", "hdfs://40.125.167.161:9000/mnt/resource/hbase/data");
     }
 
     public synchronized void init() {
