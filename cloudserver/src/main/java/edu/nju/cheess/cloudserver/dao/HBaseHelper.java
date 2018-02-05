@@ -163,7 +163,8 @@ public class HBaseHelper {
     }
 
     /**
-     * 列值查询（采用子串匹配比较器）
+     * 列值查询
+     *
      * @param tableName     表名
      * @param columnFamily  列族
      * @param column        列名
@@ -179,7 +180,38 @@ public class HBaseHelper {
                     Bytes.toBytes(columnFamily),
                     Bytes.toBytes(column),
                     CompareFilter.CompareOp.EQUAL,
-                    new SubstringComparator(value));
+                    Bytes.toBytes(value));
+            Scan scan = new Scan();
+            scan.setFilter(filter);
+            ResultScanner scanner = table.getScanner(scan);
+            mapList = resultScannerToMapList(scanner);
+            scanner.close();
+            table.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return mapList;
+    }
+
+    /**
+     * 列值查询（采用比较器）
+     *
+     * @param tableName     表名
+     * @param columnFamily  列族
+     * @param column        列名
+     * @param comparator    比较器
+     * @return              Result
+     */
+    public List<Map<String, String>> getDataByColumnValue(String tableName, String columnFamily, String column, ByteArrayComparable comparator) {
+        List<Map<String, String>> mapList = new ArrayList<>();
+        try {
+            Table table = conn.getTable(TableName.valueOf(tableName));
+            // 设置SingleColumnValueFilter
+            Filter filter = new SingleColumnValueFilter(
+                    Bytes.toBytes(columnFamily),
+                    Bytes.toBytes(column),
+                    CompareFilter.CompareOp.EQUAL,
+                    comparator);
             Scan scan = new Scan();
             scan.setFilter(filter);
             ResultScanner scanner = table.getScanner(scan);

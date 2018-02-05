@@ -16,12 +16,16 @@ import java.util.stream.Collectors;
 @Repository
 public class JobDaoImpl implements JobDao {
 
-    private static final String TABLE_NAME = "cloud:job";
+    public static final String TABLE_NAME = "cloud:job";
+
+    private final HBaseHelper hBaseHelper;
 
     @Autowired
-    private HBaseHelper hBaseHelper;
+    public JobDaoImpl(HBaseHelper hBaseHelper) {
+        this.hBaseHelper = hBaseHelper;
+    }
 
-    private Job getJobEntityByMap(Map<String, String> data) {
+    public Job getJobEntityByMap(Map<String, String> data) {
         if (data.get("rowKey") == null) {
             return null;
         }

@@ -4,6 +4,7 @@ import edu.nju.cheess.cloudserver.dao.CompanyDao;
 import edu.nju.cheess.cloudserver.dao.HBaseHelper;
 import edu.nju.cheess.cloudserver.entity.Company;
 import edu.nju.cheess.cloudserver.entity.Job;
+import org.apache.hadoop.hbase.filter.SubstringComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +17,17 @@ import java.util.stream.Collectors;
 @Repository
 public class CompanyDaoImpl implements CompanyDao {
 
-    @Autowired
-    private HBaseHelper hBaseHelper;
+    private final HBaseHelper hBaseHelper;
+
+    private final JobDaoImpl jobDao;
 
     private static final String TABLE_NAME = "cloud:company";
+
+    @Autowired
+    public CompanyDaoImpl(HBaseHelper hBaseHelper, JobDaoImpl jobDao) {
+        this.hBaseHelper = hBaseHelper;
+        this.jobDao = jobDao;
+    }
 
     private Company getCompanyEntityByMap(Map<String, String> data) {
         if (data.get("rowKey") == null) {
@@ -49,7 +57,10 @@ public class CompanyDaoImpl implements CompanyDao {
     @Override
     public Page<Company> getCompanyByCondition(String keyword, Pageable pageable) {
         hBaseHelper.init();
-        List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(TABLE_NAME, "info", "name", keyword);
+        // 子串比较器
+        List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(
+                TABLE_NAME, "info", "name",
+                new SubstringComparator(keyword));
         hBaseHelper.close();
 
         List<Company> companies = dataList.stream().map(this::getCompanyEntityByMap).collect(Collectors.toList());
@@ -73,7 +84,15 @@ public class CompanyDaoImpl implements CompanyDao {
 
     @Override
     public List<Job> getJobs(Long id) {
-        return null;
+        hBaseHelper.init();
+        // 获取企业名称
+        Map<String, String> data = hBaseHelper.getData(TABLE_NAME, String.valueOf(id), "info", "name");
+        String companyName = data.get("name");
+
+        List<Map<String, String>> mapList = hBaseHelper.getDataByColumnValue(JobDaoImpl.TABLE_NAME, "info", "company", companyName);
+        hBaseHelper.close();
+
+        return mapList.stream().map(jobDao::getJobEntityByMap).collect(Collectors.toList());
     }
 
     @Override
