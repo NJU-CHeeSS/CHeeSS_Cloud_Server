@@ -1,5 +1,6 @@
 package edu.nju.cheess.cloudserver.service.impl;
 
+import com.hankcs.hanlp.HanLP;
 import edu.nju.cheess.cloudserver.bean.CompanyAnalyseBean;
 import edu.nju.cheess.cloudserver.bean.CompanyInfoBean;
 import edu.nju.cheess.cloudserver.bean.CompanyMiniBean;
@@ -86,7 +87,21 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public CompanyAnalyseBean getCompanyAnalyse(Long companyId) {
-        return null;
+        List<Job> jobs=companyDao.getJobs(companyId);
+        double maxSalary=jobs.get(0).getHighMoney();
+        double minSalary=jobs.get(0).getLowMoney();
+        double meanSalary=0;
+        for (Job job : jobs) {
+            if (job.getHighMoney() > maxSalary) {
+                maxSalary = job.getHighMoney();
+            }
+            if (job.getLowMoney()<minSalary){
+                minSalary=job.getLowMoney();
+            }
+            meanSalary=meanSalary+(job.getHighMoney()+job.getLowMoney())/2.0;
+        }
+        meanSalary=meanSalary/jobs.size();
+        return new CompanyAnalyseBean(maxSalary,minSalary,meanSalary);
     }
 
 
@@ -97,8 +112,8 @@ public class CompanyServiceImpl implements CompanyService {
      * @return 企业关键词列表
      */
     private List<String> getKeywordsByIntroduction(String introduction) {
-
-        // TODO
-        return null;
+        //调用HanLP TextRank算法
+        List<String> keywordList = HanLP.extractKeyword(introduction, 3);
+        return keywordList;
     }
 }
