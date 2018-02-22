@@ -99,7 +99,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public String analyseSkills(Long jobId) {
+    public SkillInfoBean analyseSkills(Long jobId) {
         return null;
     }
 }

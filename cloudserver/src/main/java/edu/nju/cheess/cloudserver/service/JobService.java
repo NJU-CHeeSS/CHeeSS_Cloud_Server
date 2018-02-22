@@ -71,5 +71,5 @@ public interface JobService {
      *
      * @return 职位技能需求信息
      */
-    String analyseSkills(Long jobId);
+    SkillInfoBean analyseSkills(Long jobId);
 }

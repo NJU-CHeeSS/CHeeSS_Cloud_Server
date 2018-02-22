@@ -127,9 +127,9 @@ public class JobController {
     }
 
     /**
-     * 获得待遇分析信息
+     * 获得职位对比信息
      *
-     * @return 待遇分析信息
+     * @return 职位对比信息
      */
     @ResponseBody
     @RequestMapping(
@@ -151,7 +151,7 @@ public class JobController {
             value = "/jobs/skill",
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
-    public String analyseSkills(Long jobId) {
+    public SkillInfoBean analyseSkills(Long jobId) {
 
         return jobService.analyseSkills(jobId);
     }
