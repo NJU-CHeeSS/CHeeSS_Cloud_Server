@@ -6,7 +6,6 @@ import edu.nju.cheess.cloudserver.entity.Company;
 import edu.nju.cheess.cloudserver.entity.Job;
 import org.apache.hadoop.hbase.filter.SubstringComparator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -55,7 +54,7 @@ public class CompanyDaoImpl implements CompanyDao {
     }
 
     @Override
-    public Page<Company> getCompanyByCondition(String keyword, Pageable pageable) {
+    public List<Company> getCompanyByCondition(String keyword, Pageable pageable) {
         hBaseHelper.init();
         // 子串比较器
         List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(
@@ -63,14 +62,7 @@ public class CompanyDaoImpl implements CompanyDao {
                 new SubstringComparator(keyword));
         hBaseHelper.close();
 
-        List<Company> companies = dataList.stream().map(this::getCompanyEntityByMap).collect(Collectors.toList());
-        for (Company company : companies) {
-            System.out.println(company.getId());
-            System.out.println(company.getName());
-            System.out.println();
-        }
-
-        return null;
+        return dataList.stream().map(this::getCompanyEntityByMap).collect(Collectors.toList());
     }
 
     @Override
@@ -102,11 +94,24 @@ public class CompanyDaoImpl implements CompanyDao {
 
     @Override
     public List<Company> getCompanyByType(String type) {
-        return null;
+        hBaseHelper.init();
+        List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(
+                TABLE_NAME, "info", "company_type", type);
+        hBaseHelper.close();
+
+        return dataList.stream().map(this::getCompanyEntityByMap).collect(Collectors.toList());
     }
 
     @Override
     public List<Company> getCompanyByIndustry(String industry) {
-        return null;
+        hBaseHelper.init();
+        // 单个公司通常设计众多产业，采用子串比较器
+        List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(
+                TABLE_NAME, "info", "industry",
+                new SubstringComparator(industry));
+        hBaseHelper.close();
+
+        return dataList.stream().map(this::getCompanyEntityByMap).collect(Collectors.toList());
     }
+
 }

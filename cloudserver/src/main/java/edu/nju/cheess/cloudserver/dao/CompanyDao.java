@@ -2,7 +2,6 @@ package edu.nju.cheess.cloudserver.dao;
 
 import edu.nju.cheess.cloudserver.entity.Company;
 import edu.nju.cheess.cloudserver.entity.Job;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -24,7 +23,7 @@ public interface CompanyDao {
      * @param pageable  分页信息
      * @return 企业信息列表
      */
-    Page<Company> getCompanyByCondition(String keyword, Pageable pageable);
+    List<Company> getCompanyByCondition(String keyword, Pageable pageable);
 
     /**
      * 获取企业

@@ -38,16 +38,16 @@ public class CompanyServiceImpl implements CompanyService {
         res.setSize(size);
         res.setPage(page);
 
-        org.springframework.data.domain.Page<Company> companyPage = companyDao.getCompanyByCondition(keyword,
+        List<Company> companyList = companyDao.getCompanyByCondition(keyword,
                 new PageRequest(page - 1, size));
 
         List<CompanyMiniBean> miniBeans = new ArrayList<>();
-        for (Company company : companyPage.getContent()) {
+        for (Company company : companyList) {
             List<String> keywords = getKeywordsByIntroduction(company.getIntroduction());
             miniBeans.add(new CompanyMiniBean(company.getId(), company.getName(), company.getIndustry(), keywords));
         }
         res.setResult(miniBeans);
-        res.setTotalCount((int) companyPage.getTotalElements());
+        res.setTotalCount(companyList.size());
         return res;
     }
 
