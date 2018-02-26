@@ -77,11 +77,16 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<CompanyMiniBean> getRelatedCompanies(Long companyId) {
+        Company company = companyDao.getCompanyById(companyId);
+        String type=company.getType();
+        String industry=company.getIndustry();
+        //获得某一类别的公司
         return null;
     }
 
     @Override
     public List<CompanyMiniBean> getCompaniesRank(String industry) {
+        //获得某一行业的公司
         return null;
     }
 

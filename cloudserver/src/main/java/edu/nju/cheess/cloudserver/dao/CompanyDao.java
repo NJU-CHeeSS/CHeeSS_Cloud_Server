@@ -49,4 +49,16 @@ public interface CompanyDao {
      */
     List<Company> getPopularCompanies();
 
+    /**
+     * 获得某一类别的企业
+     * @return
+     */
+    List<Company> getCompanyByType(String type);
+
+    /**
+     * 获得某一行业的企业（数据库中一个公司的多个行业由/隔开）
+     * @param industry
+     * @return
+     */
+    List<Company> getCompanyByIndustry(String industry);
 }

@@ -99,4 +99,14 @@ public class CompanyDaoImpl implements CompanyDao {
     public List<Company> getPopularCompanies() {
         return null;
     }
+
+    @Override
+    public List<Company> getCompanyByType(String type) {
+        return null;
+    }
+
+    @Override
+    public List<Company> getCompanyByIndustry(String industry) {
+        return null;
+    }
 }
