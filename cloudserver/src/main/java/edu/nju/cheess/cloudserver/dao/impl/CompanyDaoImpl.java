@@ -89,6 +89,7 @@ public class CompanyDaoImpl implements CompanyDao {
 
     @Override
     public List<Company> getPopularCompanies() {
+        // TODO
         return null;
     }
 
@@ -105,7 +106,7 @@ public class CompanyDaoImpl implements CompanyDao {
     @Override
     public List<Company> getCompanyByIndustry(String industry) {
         hBaseHelper.init();
-        // 单个公司通常设计众多产业，采用子串比较器
+        // 单个公司通常涉及众多产业，采用子串比较器
         List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(
                 TABLE_NAME, "info", "industry",
                 new SubstringComparator(industry));

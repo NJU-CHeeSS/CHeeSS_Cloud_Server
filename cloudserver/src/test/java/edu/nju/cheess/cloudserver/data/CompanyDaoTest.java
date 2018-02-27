@@ -30,7 +30,8 @@ public class CompanyDaoTest {
 
     @Test
     public void testSearch() {
-        companyDao.getCompanyByCondition("广告有限公司", null);
+        List<Company> companies = companyDao.getCompanyByCondition("广告有限公司", null);
+        companies.forEach(c -> System.out.println(c.getName()));
     }
 
     @Test

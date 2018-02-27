@@ -1,7 +1,6 @@
 package edu.nju.cheess.cloudserver.dao;
 
 import edu.nju.cheess.cloudserver.entity.Job;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -23,7 +22,7 @@ public interface JobDao {
      * @param pageable  分页信息
      * @return          职业列表
      */
-    Page<Job> getJobByCondition(String keyword, Pageable pageable);
+    List<Job> getJobByCondition(String keyword, Pageable pageable);
 
     /**
      * 获取职业

@@ -5,7 +5,6 @@ import edu.nju.cheess.cloudserver.dao.JobDao;
 import edu.nju.cheess.cloudserver.entity.Job;
 import edu.nju.cheess.cloudserver.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -61,19 +60,12 @@ public class JobDaoImpl implements JobDao {
     }
 
     @Override
-    public Page<Job> getJobByCondition(String keyword, Pageable pageable) {
+    public List<Job> getJobByCondition(String keyword, Pageable pageable) {
         hBaseHelper.init();
         List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(TABLE_NAME, "info", "name", keyword);
         hBaseHelper.close();
 
-        List<Job> jobs = dataList.stream().map(this::getJobEntityByMap).collect(Collectors.toList());
-        for (Job job : jobs) {
-            System.out.println(job.getId());
-            System.out.println(job.getTitle());
-            System.out.println();
-        }
-
-        return null;
+        return dataList.stream().map(this::getJobEntityByMap).collect(Collectors.toList());
     }
 
     @Override

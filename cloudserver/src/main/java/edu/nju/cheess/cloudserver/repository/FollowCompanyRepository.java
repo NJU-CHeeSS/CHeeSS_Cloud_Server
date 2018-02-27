@@ -10,7 +10,8 @@ import java.util.List;
 /**
  * Created by CLL on 18/1/5.
  */
-public interface FollowCompanyRepository extends JpaRepository<FollowCompany,FollowCompanyKey>{
+public interface FollowCompanyRepository extends JpaRepository<FollowCompany, FollowCompanyKey> {
+
     /**
      * 获得关注的企业ID列表
      * @param userID
@@ -18,4 +19,5 @@ public interface FollowCompanyRepository extends JpaRepository<FollowCompany,Fol
      */
     @Query("select fc.companyID from FollowCompany fc where fc.userID=?1")
     List<Integer> findCompanyIDs(Long userID);
+
 }
