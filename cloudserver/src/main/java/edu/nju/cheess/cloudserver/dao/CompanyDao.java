@@ -11,10 +11,18 @@ public interface CompanyDao {
     /**
      * 获得企业信息
      *
-     * @param id 企业id
-     * @return 企业信息
+     * @param id    企业id
+     * @return      企业信息
      */
     Company getCompanyById(Long id);
+
+    /**
+     * 获得企业信息
+     *
+     * @param name  企业名称
+     * @return      企业信息
+     */
+    Company getCompanyByName(String name);
 
     /**
      * 根据关键词和条件分页获得企业列表

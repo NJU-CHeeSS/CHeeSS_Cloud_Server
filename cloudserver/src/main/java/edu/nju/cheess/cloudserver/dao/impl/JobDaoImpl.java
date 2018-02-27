@@ -51,9 +51,7 @@ public class JobDaoImpl implements JobDao {
 
     @Override
     public Job getJobById(Long id) {
-        hBaseHelper.init();
         Map<String, String> data = hBaseHelper.getData(TABLE_NAME, String.valueOf(id));
-        hBaseHelper.close();
 
         return getJobEntityByMap(data);
 
@@ -61,18 +59,14 @@ public class JobDaoImpl implements JobDao {
 
     @Override
     public List<Job> getJobByCondition(String keyword, Pageable pageable) {
-        hBaseHelper.init();
         List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(TABLE_NAME, "info", "name", keyword);
-        hBaseHelper.close();
 
         return dataList.stream().map(this::getJobEntityByMap).collect(Collectors.toList());
     }
 
     @Override
     public List<Job> getJobs(Pageable pageable) {
-        hBaseHelper.init();
         List<Map<String, String>> dataList = hBaseHelper.getDataByPage(TABLE_NAME, pageable.getPageSize(), pageable.getPageNumber());
-        hBaseHelper.close();
 
         return dataList.stream().map(this::getJobEntityByMap).collect(Collectors.toList());
     }

@@ -23,7 +23,6 @@ public class HBaseHelper {
 
     private Configuration configuration;
     private Connection conn;
-    private Admin admin;
 
     public HBaseHelper() {
         configuration = HBaseConfiguration.create();
@@ -31,25 +30,9 @@ public class HBaseHelper {
         configuration.set("hbase.zookeeper.quorum", "40.125.167.161,40.125.212.93,40.125.215.227");
         configuration.set("hbase.master", "40.125.167.161:16000");
         configuration.set("hbase.root.dir", "hdfs://40.125.167.161:9000/mnt/resource/hbase/data");
-    }
 
-    public synchronized void init() {
         try {
             conn = ConnectionFactory.createConnection(configuration);
-            admin = conn.getAdmin();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public synchronized void close() {
-        try {
-            if (null != admin) {
-                admin.close();
-            }
-            if (null != conn) {
-                conn.close();
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }

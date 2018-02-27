@@ -28,7 +28,7 @@ public class CompanyDaoImpl implements CompanyDao {
         this.jobDao = jobDao;
     }
 
-    private Company getCompanyEntityByMap(Map<String, String> data) {
+    private Company convertMapToCompanyEntity(Map<String, String> data) {
         if (data.get("rowKey") == null) {
             return null;
         }
@@ -46,43 +46,45 @@ public class CompanyDaoImpl implements CompanyDao {
 
     @Override
     public Company getCompanyById(Long id) {
-        hBaseHelper.init();
         Map<String, String> data = hBaseHelper.getData(TABLE_NAME, String.valueOf(id));
-        hBaseHelper.close();
 
-        return getCompanyEntityByMap(data);
+        return convertMapToCompanyEntity(data);
+    }
+
+    @Override
+    public Company getCompanyByName(String name) {
+        List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(
+                TABLE_NAME, "info", "name", name);
+        if (dataList.isEmpty()) {
+            return null;
+        }
+        return convertMapToCompanyEntity(dataList.get(0));
     }
 
     @Override
     public List<Company> getCompanyByCondition(String keyword, Pageable pageable) {
-        hBaseHelper.init();
         // 子串比较器
         List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(
                 TABLE_NAME, "info", "name",
                 new SubstringComparator(keyword));
-        hBaseHelper.close();
 
-        return dataList.stream().map(this::getCompanyEntityByMap).collect(Collectors.toList());
+        return dataList.stream().map(this::convertMapToCompanyEntity).collect(Collectors.toList());
     }
 
     @Override
     public List<Company> getCompanies(Pageable pageable) {
-        hBaseHelper.init();
         List<Map<String, String>> mapList = hBaseHelper.getDataByPage(TABLE_NAME, pageable.getPageSize(), pageable.getPageNumber());
-        hBaseHelper.close();
 
-        return mapList.stream().map(this::getCompanyEntityByMap).collect(Collectors.toList());
+        return mapList.stream().map(this::convertMapToCompanyEntity).collect(Collectors.toList());
     }
 
     @Override
     public List<Job> getJobs(Long id) {
-        hBaseHelper.init();
         // 获取企业名称
         Map<String, String> data = hBaseHelper.getData(TABLE_NAME, String.valueOf(id), "info", "name");
         String companyName = data.get("name");
 
         List<Map<String, String>> mapList = hBaseHelper.getDataByColumnValue(JobDaoImpl.TABLE_NAME, "info", "company", companyName);
-        hBaseHelper.close();
 
         return mapList.stream().map(jobDao::getJobEntityByMap).collect(Collectors.toList());
     }
@@ -95,24 +97,20 @@ public class CompanyDaoImpl implements CompanyDao {
 
     @Override
     public List<Company> getCompanyByType(String type) {
-        hBaseHelper.init();
         List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(
                 TABLE_NAME, "info", "company_type", type);
-        hBaseHelper.close();
 
-        return dataList.stream().map(this::getCompanyEntityByMap).collect(Collectors.toList());
+        return dataList.stream().map(this::convertMapToCompanyEntity).collect(Collectors.toList());
     }
 
     @Override
     public List<Company> getCompanyByIndustry(String industry) {
-        hBaseHelper.init();
         // 单个公司通常涉及众多产业，采用子串比较器
         List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(
                 TABLE_NAME, "info", "industry",
                 new SubstringComparator(industry));
-        hBaseHelper.close();
 
-        return dataList.stream().map(this::getCompanyEntityByMap).collect(Collectors.toList());
+        return dataList.stream().map(this::convertMapToCompanyEntity).collect(Collectors.toList());
     }
 
 }
