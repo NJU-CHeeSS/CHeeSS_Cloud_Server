@@ -207,4 +207,26 @@ public class HBaseHelper {
         return mapList;
     }
 
+    /**
+     * 多条件组合查询
+     * @param tableName     表名
+     * @param filterList    过滤器列表
+     * @return              Result
+     */
+    public List<Map<String, String>> getDataByFilterList(String tableName, FilterList filterList) {
+        List<Map<String, String>> mapList = new ArrayList<>();
+        try {
+            Table table = conn.getTable(TableName.valueOf(tableName));
+            Scan scan = new Scan();
+            scan.setFilter(filterList);
+            ResultScanner scanner = table.getScanner(scan);
+            mapList = resultScannerToMapList(scanner);
+            scanner.close();
+            table.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return mapList;
+    }
+
 }

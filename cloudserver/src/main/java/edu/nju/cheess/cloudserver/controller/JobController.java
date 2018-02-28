@@ -123,7 +123,8 @@ public class JobController {
             produces = {"application/json; charset=UTF-8"})
     public TreatmentInfoBean analyzeTreatment() {
 
-        return jobService.analyzeTreatment();
+//        return jobService.analyzeTreatment();
+        return null;
     }
 
     /**
@@ -153,6 +154,7 @@ public class JobController {
             produces = {"application/json; charset=UTF-8"})
     public SkillInfoBean analyseSkills(Long jobId) {
 
-        return jobService.analyseSkills(jobId);
+//        return jobService.analyseSkills(jobId);
+        return null;
     }
 }

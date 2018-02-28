@@ -86,7 +86,7 @@ public class CompanyDaoImpl implements CompanyDao {
 
         List<Map<String, String>> mapList = hBaseHelper.getDataByColumnValue(JobDaoImpl.TABLE_NAME, "info", "company", companyName);
 
-        return mapList.stream().map(jobDao::getJobEntityByMap).collect(Collectors.toList());
+        return mapList.stream().map(jobDao::convertMapToJobEntity).collect(Collectors.toList());
     }
 
     @Override
