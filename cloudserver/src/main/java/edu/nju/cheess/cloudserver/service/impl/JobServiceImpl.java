@@ -1,5 +1,6 @@
 package edu.nju.cheess.cloudserver.service.impl;
 
+import com.hankcs.hanlp.HanLP;
 import edu.nju.cheess.cloudserver.bean.*;
 import edu.nju.cheess.cloudserver.dao.JobDao;
 import edu.nju.cheess.cloudserver.entity.Job;
@@ -106,7 +107,8 @@ public class JobServiceImpl implements JobService {
         List<Job> cityJobs = jobDao.getJobByJobTypeAndCity(jobType, city);
 
         /* 全国的职位 */
-        double countryLowSum = 0.0, countryHighSum = 0.0, countryLowest = Integer.MAX_VALUE, countryHighest = 0.0; // 会有工资比Integer.MAX_VALUE还高吗
+        double countryLowSum = 0.0, countryHighSum = 0.0;
+        double countryLowest = countryJobs.get(0).getLowMoney(), countryHighest = 0.0;
         List<String> areaList = new ArrayList<>();
 
         for (Job countryJob : countryJobs) {
@@ -132,7 +134,8 @@ public class JobServiceImpl implements JobService {
 
 
         /* 该城市的职位 */
-        double cityLowSum = 0.0, cityHighSum = 0.0, cityLowest = Integer.MAX_VALUE, cityHighest = 0.0;
+        double cityLowSum = 0.0, cityHighSum = 0.0;
+        double cityLowest = cityJobs.get(0).getLowMoney(), cityHighest = 0.0;
         List<String> sizeList = new ArrayList<>();
         List<String> educationList = new ArrayList<>();
         int maxExperience = 0;
@@ -196,7 +199,28 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public SkillInfoBean analyseSkills(String jobType) {
-        return null;
+        List<Job> jobs = jobDao.getJobByJobType(jobType);
+        List<String> keywords = new ArrayList<>();
+        List<Integer> keywordsNum = new ArrayList<>();
+
+        for (Job job : jobs) {
+            List<String> jobKeywords = getKeywordsByInformation(job.getInformation());
+            for (String jobKeyword : jobKeywords) {
+                if (!keywords.contains(jobKeyword)) {
+                    keywords.add(jobKeyword);
+                    keywordsNum.add(1);
+                } else {
+                    int index = keywords.indexOf(jobKeyword);
+                    keywordsNum.set(index, keywordsNum.get(index) + 1);
+                }
+            }
+        }
+        List<SkillKeywordsBean> skillKeywords = new ArrayList<>();
+        for (int i = 0; i < keywords.size(); i++) {
+            skillKeywords.add(new SkillKeywordsBean(keywords.get(i), keywordsNum.get(i)));
+        }
+
+        return new SkillInfoBean(jobType, skillKeywords);
     }
 
     /**
@@ -207,7 +231,8 @@ public class JobServiceImpl implements JobService {
      * @return 统计数据，平均值，最低值，最高值
      */
     private List<Integer> getStatisticResult(List<Job> jobs, String string, String type) {
-        double lowSum = 0.0, highSum = 0.0, lowest = Integer.MAX_VALUE, highest = 0.0;
+        double lowSum = 0.0, highSum = 0.0;
+        double lowest = jobs.get(0).getLowMoney(), highest = 0.0;
         int num = 0;
 
         boolean isSatisfied = false;
@@ -325,5 +350,16 @@ public class JobServiceImpl implements JobService {
         }
 
         return area;
+    }
+
+    /**
+     * 通过职位information获得职位关键词
+     *
+     * @param information 职位信息
+     * @return 职位关键词列表
+     */
+    private List<String> getKeywordsByInformation(String information) {
+        //调用HanLP TextRank算法
+        return HanLP.extractKeyword(information, 3);
     }
 }

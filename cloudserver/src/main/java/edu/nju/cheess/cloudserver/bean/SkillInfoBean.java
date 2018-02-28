@@ -4,8 +4,6 @@ import java.util.List;
 
 public class SkillInfoBean {
 
-    private String industry;
-
     private String job;
 
     private List<SkillKeywordsBean> keywords;
@@ -13,18 +11,9 @@ public class SkillInfoBean {
     public SkillInfoBean() {
     }
 
-    public SkillInfoBean(String industry, String job, List<SkillKeywordsBean> keywords) {
-        this.industry = industry;
+    public SkillInfoBean(String job, List<SkillKeywordsBean> keywords) {
         this.job = job;
         this.keywords = keywords;
-    }
-
-    public String getIndustry() {
-        return industry;
-    }
-
-    public void setIndustry(String industry) {
-        this.industry = industry;
     }
 
     public String getJob() {
