@@ -57,7 +57,7 @@ public interface JobService {
      *
      * @return 待遇分析信息
      */
-    TreatmentInfoBean analyzeTreatment();
+    TreatmentInfoBean analyzeTreatment(String jobType, String city);
 
     /**
      * 职位比较
@@ -71,5 +71,5 @@ public interface JobService {
      *
      * @return 职位技能需求信息
      */
-    SkillInfoBean analyseSkills(Long jobId);
+    SkillInfoBean analyseSkills(String jobType);
 }

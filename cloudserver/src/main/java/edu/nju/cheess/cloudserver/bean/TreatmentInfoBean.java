@@ -4,8 +4,6 @@ import java.util.List;
 
 public class TreatmentInfoBean {
 
-    private String industry;
-
     private String job;
 
     private String city;
@@ -32,15 +30,10 @@ public class TreatmentInfoBean {
 
     private List<ExperienceSalaryBean> experienceSalary;
 
-    private Integer maleSalary;
-
-    private Integer femaleSalary;
-
     public TreatmentInfoBean() {
     }
 
-    public TreatmentInfoBean(String industry, String job, String city, Integer cityAverage, Integer cityLow, Integer cityHigh, Integer countryAverage, Integer countryLow, Integer countryHigh, List<TreatmentDistributionBean> distribution, List<AreaSalaryBean> areaSalary, List<SizeSalaryBean> sizeSalary, List<EducationSalaryBean> educationSalary, List<ExperienceSalaryBean> experienceSalary, Integer maleSalary, Integer femaleSalary) {
-        this.industry = industry;
+    public TreatmentInfoBean(String job, String city, Integer cityAverage, Integer cityLow, Integer cityHigh, Integer countryAverage, Integer countryLow, Integer countryHigh, List<TreatmentDistributionBean> distribution, List<AreaSalaryBean> areaSalary, List<SizeSalaryBean> sizeSalary, List<EducationSalaryBean> educationSalary, List<ExperienceSalaryBean> experienceSalary) {
         this.job = job;
         this.city = city;
         this.cityAverage = cityAverage;
@@ -54,16 +47,6 @@ public class TreatmentInfoBean {
         this.sizeSalary = sizeSalary;
         this.educationSalary = educationSalary;
         this.experienceSalary = experienceSalary;
-        this.maleSalary = maleSalary;
-        this.femaleSalary = femaleSalary;
-    }
-
-    public String getIndustry() {
-        return industry;
-    }
-
-    public void setIndustry(String industry) {
-        this.industry = industry;
     }
 
     public String getJob() {
@@ -168,21 +151,5 @@ public class TreatmentInfoBean {
 
     public void setExperienceSalary(List<ExperienceSalaryBean> experienceSalary) {
         this.experienceSalary = experienceSalary;
-    }
-
-    public Integer getMaleSalary() {
-        return maleSalary;
-    }
-
-    public void setMaleSalary(Integer maleSalary) {
-        this.maleSalary = maleSalary;
-    }
-
-    public Integer getFemaleSalary() {
-        return femaleSalary;
-    }
-
-    public void setFemaleSalary(Integer femaleSalary) {
-        this.femaleSalary = femaleSalary;
     }
 }

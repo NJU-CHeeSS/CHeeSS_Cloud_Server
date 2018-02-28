@@ -8,7 +8,7 @@ import java.util.List;
 public interface JobDao {
 
     /**
-     * 获得职位信息
+     * 根据职业id获得职位信息
      *
      * @param id 职位id
      * @return 职位信息
@@ -16,19 +16,35 @@ public interface JobDao {
     Job getJobById(Long id);
 
     /**
+     * 根据职业类型获得职位列表
+     *
+     * @param jobType 职位类型
+     * @return 职位列表
+     */
+    List<Job> getJobByJobType(String jobType);
+
+    /**
+     * 根据职业类型和城市获得职位列表
+     *
+     * @param jobType 职位类型
+     * @return 职位列表
+     */
+    List<Job> getJobByJobTypeAndCity(String jobType, String city);
+
+    /**
      * 根据关键词和条件分页获得职位列表
      *
-     * @param keyword   关键词
-     * @param pageable  分页信息
-     * @return          职业列表
+     * @param keyword  关键词
+     * @param pageable 分页信息
+     * @return 职业列表
      */
     List<Job> getJobByCondition(String keyword, Pageable pageable);
 
     /**
      * 获取职业
      *
-     * @param pageable  分页信息
-     * @return          职业列表
+     * @param pageable 分页信息
+     * @return 职业列表
      */
     List<Job> getJobs(Pageable pageable);
 

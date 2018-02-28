@@ -19,6 +19,14 @@ public interface CompanyService {
     CompanyInfoBean getCompanyById(Long companyId);
 
     /**
+     * 获得企业信息
+     *
+     * @param name 企业名称
+     * @return 企业信息
+     */
+    CompanyInfoBean getCompanyByName(String name);
+
+    /**
      * 搜索企业列表
      *
      * @param keyword 关键字
@@ -71,4 +79,13 @@ public interface CompanyService {
      * @return 企业水平分析
      */
     CompanyAnalyseBean getCompanyAnalyse(Long companyId);
+
+
+    /**
+     * 通过企业名称获得企业规模
+     *
+     * @param name 企业名称
+     * @return 企业规模
+     */
+    String getCompanySize(String name);
 }

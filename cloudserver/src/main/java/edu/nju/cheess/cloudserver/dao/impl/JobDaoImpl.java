@@ -58,6 +58,16 @@ public class JobDaoImpl implements JobDao {
     }
 
     @Override
+    public List<Job> getJobByJobType(String jobType) {
+        return null;
+    }
+
+    @Override
+    public List<Job> getJobByJobTypeAndCity(String jobType, String city) {
+        return null;
+    }
+
+    @Override
     public List<Job> getJobByCondition(String keyword, Pageable pageable) {
         List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(TABLE_NAME, "info", "name", keyword);
 
