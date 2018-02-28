@@ -14,10 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -88,16 +88,46 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public List<CompanyMiniBean> getRelatedCompanies(Long companyId) {
         Company company = companyDao.getCompanyById(companyId);
-        String type = company.getType();
-        String industry = company.getIndustry();
+        String type=company.getType();
+        String industry=company.getIndustry();
+        List<CompanyMiniBean> result=new ArrayList<>();
         //获得某一类别的公司
-        return null;
+        List<Company> typeCompanies=companyDao.getCompanyByType(type);
+        String[] industries=industry.split("/");
+        List<Company> temp=typeCompanies;
+        for (String industry1 : industries) {
+            temp.retainAll(companyDao.getCompanyByIndustry(industry1));
+        }
+        result.addAll(temp.stream().map(c -> new CompanyMiniBean(c.getId(), c.getName(), c.getIndustry(), getKeywordsByIntroduction(c.getIntroduction()))).collect(Collectors.toList()));
+        return result;
     }
 
     @Override
     public List<CompanyMiniBean> getCompaniesRank(String industry) {
+        Map<Integer,Integer> sizes=new HashMap<>();
         //获得某一行业的公司
-        return null;
+        List<Company> companies=companyDao.getCompanyByIndustry(industry);
+        for (int i=0;i<companies.size();i++) {
+            sizes.put(i,getSizeNumber(companies.get(i).getSize()));
+        }
+        List<Map.Entry<Integer,Integer>> list = new ArrayList<Map.Entry<Integer,Integer>>(sizes.entrySet());
+        Collections.sort(list,new Comparator<Map.Entry<Integer,Integer>>() {
+            //降序排序
+            public int compare(Map.Entry<Integer,Integer> o1,
+                               Map.Entry<Integer,Integer> o2) {
+                return o2.getValue().compareTo(o1.getValue());
+            }
+
+        });
+        List<CompanyMiniBean> result=new ArrayList<>();
+        Company temp=null;
+        for(Map.Entry<Integer,Integer> mapping:list){
+            temp=companies.get(mapping.getKey());
+            if (temp!=null) {
+                result.add(new CompanyMiniBean(temp.getId(), temp.getName(), temp.getIndustry(), getKeywordsByIntroduction(temp.getIntroduction())));
+            }
+        }
+        return result;
     }
 
     @Override
@@ -145,6 +175,29 @@ public class CompanyServiceImpl implements CompanyService {
         } else {
             return "未知";
         }
+    }
+
+    /**
+     * 获得企业规模数字
+     * @param size
+     * @return
+     */
+    private int getSizeNumber(String size){
+        String regex = "[0-9]+人";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(size);
+        StringBuilder numStringBuilder = new StringBuilder();
+
+        if (matcher.find()) {
+            for (int i = 0; i <= matcher.groupCount(); i++) {
+                numStringBuilder.append(matcher.group(i));
+            }
+
+            String numString = numStringBuilder.toString().substring(0, numStringBuilder.toString().length() - 1);
+            int num = Integer.valueOf(numString);
+            return num;
+        }
+        return 0;
     }
 
     /**
