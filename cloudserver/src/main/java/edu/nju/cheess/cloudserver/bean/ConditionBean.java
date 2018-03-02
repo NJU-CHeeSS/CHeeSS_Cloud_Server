@@ -1,13 +1,12 @@
 package edu.nju.cheess.cloudserver.bean;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class ConditionBean {
     /**
      * 工作地点
      */
-    private List<String> location;
+    private String location;
 
     /**
      * 最早发布日期
@@ -15,27 +14,27 @@ public class ConditionBean {
     private LocalDateTime earlyReleaseDate;
 
     /**
-     * 最晚发布日期
-     */
-    private LocalDateTime lateReleaseDate;
-
-    /**
      * 学历要求
      */
-    private List<String> diploma;
+    private String diploma;
 
-    public ConditionBean(List<String> location, LocalDateTime earlyReleaseDate, LocalDateTime lateReleaseDate, List<String> diploma) {
+    /**
+     * 工作性质
+     */
+    private String property;
+
+    public ConditionBean(String location, LocalDateTime earlyReleaseDate, String diploma, String property) {
         this.location = location;
         this.earlyReleaseDate = earlyReleaseDate;
-        this.lateReleaseDate = lateReleaseDate;
         this.diploma = diploma;
+        this.property = property;
     }
 
-    public List<String> getLocation() {
+    public String getLocation() {
         return location;
     }
 
-    public void setLocation(List<String> location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 
@@ -47,20 +46,19 @@ public class ConditionBean {
         this.earlyReleaseDate = earlyReleaseDate;
     }
 
-    public LocalDateTime getLateReleaseDate() {
-        return lateReleaseDate;
-    }
-
-    public void setLateReleaseDate(LocalDateTime lateReleaseDate) {
-        this.lateReleaseDate = lateReleaseDate;
-    }
-
-    public List<String> getDiploma() {
+    public String getDiploma() {
         return diploma;
     }
 
-    public void setDiploma(List<String> diploma) {
+    public void setDiploma(String diploma) {
         this.diploma = diploma;
     }
 
+    public String getProperty() {
+        return property;
+    }
+
+    public void setProperty(String property) {
+        this.property = property;
+    }
 }

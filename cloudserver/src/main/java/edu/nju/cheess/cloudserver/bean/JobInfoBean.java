@@ -1,6 +1,5 @@
 package edu.nju.cheess.cloudserver.bean;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class JobInfoBean {
@@ -46,6 +45,10 @@ public class JobInfoBean {
     private LocalDateTime releaseDate;
 
     /**
+     * 职位简介与福利
+     */
+    private String information;
+    /**
      * 学历要求
      */
     private String diploma;
@@ -65,7 +68,10 @@ public class JobInfoBean {
      */
     private Integer maxExperience;
 
-    public JobInfoBean(Long jobId, String jobName, String companyName, String property, Integer minSalary, Integer maxSalary, String location, LocalDateTime date, String diploma, String peopleNum, Integer minExperience, Integer maxExperience) {
+    public JobInfoBean() {
+    }
+
+    public JobInfoBean(Long jobId, String jobName, String companyName, String property, Integer minSalary, Integer maxSalary, String location, LocalDateTime releaseDate, String information, String diploma, String peopleNum, Integer minExperience, Integer maxExperience) {
         this.jobId = jobId;
         this.jobName = jobName;
         this.companyName = companyName;
@@ -73,7 +79,8 @@ public class JobInfoBean {
         this.minSalary = minSalary;
         this.maxSalary = maxSalary;
         this.location = location;
-        this.releaseDate = date;
+        this.releaseDate = releaseDate;
+        this.information = information;
         this.diploma = diploma;
         this.peopleNum = peopleNum;
         this.minExperience = minExperience;
@@ -144,6 +151,14 @@ public class JobInfoBean {
         this.releaseDate = releaseDate;
     }
 
+    public String getInformation() {
+        return information;
+    }
+
+    public void setInformation(String information) {
+        this.information = information;
+    }
+
     public String getDiploma() {
         return diploma;
     }
@@ -175,5 +190,4 @@ public class JobInfoBean {
     public void setMaxExperience(Integer maxExperience) {
         this.maxExperience = maxExperience;
     }
-
 }

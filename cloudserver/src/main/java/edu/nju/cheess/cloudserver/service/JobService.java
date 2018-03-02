@@ -29,13 +29,13 @@ public interface JobService {
     /**
      * 根据条件搜索职位列表
      *
-     * @param keyword 关键字
-     * @param order   按什么排序
-     * @param size    每页大小
-     * @param page    第几页
+     * @param order         按什么排序
+     * @param size          每页大小
+     * @param page          第几页
+     * @param conditionBean 搜索条件
      * @return 分页列表
      */
-    Page<JobInfoBean> getJobByCondition(String keyword, String order, int size, int page, ConditionBean conditionBean);
+    Page<JobInfoBean> getJobByCondition(String order, int size, int page, ConditionBean conditionBean);
 
     /**
      * 推荐职位列表

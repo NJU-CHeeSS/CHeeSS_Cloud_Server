@@ -58,25 +58,24 @@ public class JobController {
     /**
      * 根据条件搜索职位列表
      *
-     * @param keyword 关键字
-     * @param order   按什么排序
-     * @param size    每页大小
-     * @param page    第几页
+     * @param order         按什么排序
+     * @param size          每页大小
+     * @param page          第几页
+     * @param conditionBean 搜索条件
      * @return 分页列表
      */
     @ResponseBody
     @RequestMapping(
             value = "/jobs/search",
-            params = {"keyword", "order", "size", "page"},
+            params = {"order", "size", "page", "conditionBean"},
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
-    public Page<JobInfoBean> getJobByCondition(@RequestParam(value = "keyword") String keyword,
-                                               @RequestParam(value = "order") String order,
+    public Page<JobInfoBean> getJobByCondition(@RequestParam(value = "order") String order,
                                                @RequestParam(value = "size") int size,
                                                @RequestParam(value = "page") int page,
-                                               ConditionBean conditionBean) {
+                                               @RequestParam(value = "conditionBean") ConditionBean conditionBean) {
 
-        return jobService.getJobByCondition(keyword, order, size, page, conditionBean);
+        return jobService.getJobByCondition(order, size, page, conditionBean);
     }
 
     /**
@@ -121,10 +120,9 @@ public class JobController {
             value = "/jobs/analyzeTreatment",
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
-    public TreatmentInfoBean analyzeTreatment() {
+    public TreatmentInfoBean analyzeTreatment(String jobType, String city) {
 
-//        return jobService.analyzeTreatment();
-        return null;
+        return jobService.analyzeTreatment(jobType, city);
     }
 
     /**
@@ -152,9 +150,8 @@ public class JobController {
             value = "/jobs/skill",
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
-    public SkillInfoBean analyseSkills(Long jobId) {
+    public SkillInfoBean analyseSkills(String jobType) {
 
-//        return jobService.analyseSkills(jobId);
-        return null;
+        return jobService.analyseSkills(jobType);
     }
 }

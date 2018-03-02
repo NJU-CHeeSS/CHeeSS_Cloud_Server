@@ -1,10 +1,6 @@
 package edu.nju.cheess.cloudserver.bean;
 
 public class UserPasswordBean {
-    /**
-     * 用户id
-     */
-    private Long userId;
 
     /**
      * 用户名
@@ -16,18 +12,9 @@ public class UserPasswordBean {
      */
     private String password;
 
-    public UserPasswordBean(Long userId, String username, String password) {
-        this.userId = userId;
+    public UserPasswordBean(String username, String password) {
         this.username = username;
         this.password = password;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public String getUsername() {

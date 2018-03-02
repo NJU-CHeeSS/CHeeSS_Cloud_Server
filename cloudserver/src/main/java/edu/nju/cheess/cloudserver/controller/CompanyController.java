@@ -36,6 +36,22 @@ public class CompanyController {
     }
 
     /**
+     * 获得企业信息
+     *
+     * @param companyName 企业名称
+     * @return 企业信息
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/{companyName}",
+            method = RequestMethod.GET,
+            produces = {"application/json; charset=UTF-8"})
+    public CompanyInfoBean getCompanyByName(@PathVariable String companyName) {
+
+        return companyService.getCompanyByName(companyName);
+    }
+
+    /**
      * 搜索企业列表
      *
      * @param keyword 关键字

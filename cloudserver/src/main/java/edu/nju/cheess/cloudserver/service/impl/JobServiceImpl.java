@@ -31,8 +31,8 @@ public class JobServiceImpl implements JobService {
 
     private JobInfoBean jobToJobInfoBean(Job job) {
         return new JobInfoBean(job.getId(), job.getTitle(), job.getCompany(), job.getJobType(),
-                (int) job.getLowMoney(), (int) job.getHighMoney(), job.getLocation(), job.getDate(), job.getEducation(),
-                job.getTotalPeople(), job.getLowExperience(), job.getHighExperience());
+                (int) job.getLowMoney(), (int) job.getHighMoney(), job.getLocation(), job.getDate(),
+                job.getInformation(), job.getEducation(), job.getTotalPeople(), job.getLowExperience(), job.getHighExperience());
     }
 
     @Override
@@ -63,22 +63,23 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Page<JobInfoBean> getJobByCondition(String keyword, String order, int size, int page, ConditionBean conditionBean) {
+    public Page<JobInfoBean> getJobByCondition(String order, int size, int page, ConditionBean conditionBean) {
         Page<JobInfoBean> res = new Page<>();
         res.setOrder(order);
         res.setSize(size);
         res.setPage(page);
 
         // 默认按照日期倒序排序
-        List<Job> jobList = jobDao.getJobByCondition(keyword,
+        List<Job> jobList = jobDao.getJobByCondition("",
                 new PageRequest(page - 1, size, new Sort(Sort.Direction.DESC, order == null ? "date" : order)));
         List<JobInfoBean> beans = new ArrayList<>();
 
         for (Job job : jobList) {
-            if (conditionBean.getLocation() != null && conditionBean.getLocation().contains(job.getLocation()) &&
+            if (conditionBean.getLocation() != null && conditionBean.getLocation().equals(job.getLocation()) &&
                     conditionBean.getEarlyReleaseDate() != null && conditionBean.getEarlyReleaseDate().isBefore(job.getDate()) &&
-                    conditionBean.getLateReleaseDate() != null && conditionBean.getLateReleaseDate().isAfter(job.getDate()) &&
-                    conditionBean.getDiploma() != null && conditionBean.getDiploma().contains(job.getEducation())) {
+                    conditionBean.getDiploma() != null && conditionBean.getDiploma().equals(job.getEducation()) &&
+                    conditionBean.getProperty() != null && conditionBean.getProperty().equals(job.getJobType())) {
+                // TODO jobType不是正确的property
                 beans.add(jobToJobInfoBean(job));
             }
         }
