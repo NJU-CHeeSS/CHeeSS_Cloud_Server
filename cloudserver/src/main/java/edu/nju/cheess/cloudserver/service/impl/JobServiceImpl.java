@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -75,11 +76,14 @@ public class JobServiceImpl implements JobService {
         List<JobInfoBean> beans = new ArrayList<>();
 
         for (Job job : jobList) {
+            List<String> jobTypes = new ArrayList<>();
+            Collections.addAll(jobTypes, job.getJobType().split(" "));
+
             if (conditionBean.getLocation() != null && conditionBean.getLocation().equals(job.getLocation()) &&
                     conditionBean.getEarlyReleaseDate() != null && conditionBean.getEarlyReleaseDate().isBefore(job.getDate()) &&
                     conditionBean.getDiploma() != null && conditionBean.getDiploma().equals(job.getEducation()) &&
-                    conditionBean.getProperty() != null && conditionBean.getProperty().equals(job.getJobType())) {
-                // TODO jobType不是正确的property
+                    conditionBean.getProperty() != null && jobTypes.contains(conditionBean.getProperty())) {
+
                 beans.add(jobToJobInfoBean(job));
             }
         }
@@ -89,9 +93,10 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobInfoBean> getRecommendedJobs(Long userId) {
+    public Page<JobInfoBean> getRecommendedJobs(String order, int size, int page, Long userId) {
         User user = userRepository.findOne(userId);
 
+        // TODO
         return null;
     }
 
@@ -100,6 +105,18 @@ public class JobServiceImpl implements JobService {
         Job job = jobDao.getJobById(jobId);
 
         return null;
+    }
+
+    @Override
+    public List<JobInfoBean> getRelatedJobs(Long jobId) {
+        Job job = jobDao.getJobById(jobId);
+        List<JobInfoBean> relatedJobs = new ArrayList<>();
+        for (String jobType : job.getJobType().split(" ")) {
+            for (Job relatedJob : jobDao.getJobByJobType(jobType)) {
+                relatedJobs.add(jobToJobInfoBean(relatedJob));
+            }
+        }
+        return relatedJobs;
     }
 
     @Override
@@ -195,7 +212,13 @@ public class JobServiceImpl implements JobService {
         Job job1 = jobDao.getJobById(jobId1);
         Job job2 = jobDao.getJobById(jobId2);
 
-        return null;
+        return new CompareResultBean(job1.getTitle(), job2.getTitle(), job1.getCompany(), job2.getCompany(),
+                companyService.getCompanyByName(job1.getCompany()).getKeywords(),
+                companyService.getCompanyByName(job2.getCompany()).getKeywords(),
+                job1.getJobType(), job2.getJobType(), (int) job1.getLowMoney(), (int) job2.getLowMoney(),
+                (int) job1.getHighMoney(), (int) job2.getHighMoney(), job1.getLocation(), job2.getLocation(),
+                job1.getTotalPeople(), job2.getTotalPeople(), getKeywordsByInformation(job1.getInformation()),
+                getKeywordsByInformation(job2.getInformation()));
     }
 
     @Override

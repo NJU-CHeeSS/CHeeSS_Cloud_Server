@@ -48,6 +48,7 @@ public class JobInfoBean {
      * 职位简介与福利
      */
     private String information;
+
     /**
      * 学历要求
      */

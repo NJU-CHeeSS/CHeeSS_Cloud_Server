@@ -47,5 +47,4 @@ public interface JobDao {
      * @return 职业列表
      */
     List<Job> getJobs(Pageable pageable);
-
 }

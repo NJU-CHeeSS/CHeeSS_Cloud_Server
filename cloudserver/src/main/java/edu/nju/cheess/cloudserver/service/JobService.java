@@ -42,7 +42,7 @@ public interface JobService {
      *
      * @return 列表
      */
-    List<JobInfoBean> getRecommendedJobs(Long userId);
+    Page<JobInfoBean> getRecommendedJobs(String order, int size, int page, Long userId);
 
     /**
      * 获得职位薪水信息
@@ -51,6 +51,14 @@ public interface JobService {
      * @return 职位薪水信息
      */
     SalaryInfoBean analyzeSalary(Long jobId);
+
+    /**
+     * 获得相关职位信息
+     *
+     * @param jobId 职位id
+     * @return 相关企业列表
+     */
+    List<JobInfoBean> getRelatedJobs(Long jobId);
 
     /**
      * 获得待遇分析信息

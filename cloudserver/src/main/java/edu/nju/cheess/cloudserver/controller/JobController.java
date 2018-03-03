@@ -81,17 +81,23 @@ public class JobController {
     /**
      * 推荐职位列表
      *
-     * @return 列表
+     * @param order 按什么排序
+     * @param size  每页大小
+     * @param page  第几页
+     * @return 推荐职位列表
      */
     @ResponseBody
     @RequestMapping(
             value = "/users/{userId}/jobs",
+            params = {"order", "size", "page"},
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
-    public List<JobInfoBean> getRecommendedJobs(@PathVariable Long userId) {
+    public Page<JobInfoBean> getRecommendedJobs(@RequestParam(value = "order") String order,
+                                                @RequestParam(value = "size") int size,
+                                                @RequestParam(value = "page") int page,
+                                                @PathVariable Long userId) {
 
-
-        return jobService.getRecommendedJobs(userId);
+        return jobService.getRecommendedJobs(order, size, page, userId);
     }
 
     /**
@@ -108,6 +114,22 @@ public class JobController {
     public SalaryInfoBean analyzeSalary(@PathVariable Long jobId) {
 
         return jobService.analyzeSalary(jobId);
+    }
+
+    /**
+     * 获得相关职业
+     *
+     * @param jobId 职位id
+     * @return 相关职位信息
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/jobs/{jobId}/relate",
+            method = RequestMethod.GET,
+            produces = {"application/json; charset=UTF-8"})
+    public List<JobInfoBean> getRelatedCompanies(@PathVariable Long jobId) {
+
+        return jobService.getRelatedJobs(jobId);
     }
 
     /**
