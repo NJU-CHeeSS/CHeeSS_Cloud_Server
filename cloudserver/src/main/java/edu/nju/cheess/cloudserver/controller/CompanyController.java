@@ -27,7 +27,7 @@ public class CompanyController {
      */
     @ResponseBody
     @RequestMapping(
-            value = "/{companyId}",
+            value = "/company/{companyId}",
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public CompanyInfoBean getCompanyById(@PathVariable Long companyId) {
@@ -43,7 +43,7 @@ public class CompanyController {
      */
     @ResponseBody
     @RequestMapping(
-            value = "/{companyName}",
+            value = "/company/{companyName}",
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public CompanyInfoBean getCompanyByName(@PathVariable String companyName) {
@@ -61,7 +61,7 @@ public class CompanyController {
      */
     @ResponseBody
     @RequestMapping(
-            value = "/search",
+            value = "/company/search",
             params = {"keyword", "size", "page"},
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
@@ -79,7 +79,7 @@ public class CompanyController {
      */
     @ResponseBody
     @RequestMapping(
-            value = "/{companyId}/jobs",
+            value = "/company/{companyId}/jobs",
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public List<JobInfoBean> getJobs(@PathVariable Long companyId) {
@@ -94,7 +94,7 @@ public class CompanyController {
      */
     @ResponseBody
     @RequestMapping(
-            value = "",
+            value = "/company/popular",
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public List<CompanyMiniBean> getPopularCompanies() {
@@ -110,7 +110,7 @@ public class CompanyController {
      */
     @ResponseBody
     @RequestMapping(
-            value = "/{companyId}/relate",
+            value = "/company/{companyId}/relate",
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public List<CompanyMiniBean> getRelatedCompanies(@PathVariable Long companyId) {
@@ -126,7 +126,7 @@ public class CompanyController {
      */
     @ResponseBody
     @RequestMapping(
-            value = "/rank/{industry}",
+            value = "/company/rank/{industry}",
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public List<CompanyMiniBean> getCompaniesRank(@PathVariable String industry) {
@@ -142,7 +142,7 @@ public class CompanyController {
      */
     @ResponseBody
     @RequestMapping(
-            value = "/{companyId}/analyse",
+            value = "/company/{companyId}/analyse",
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public CompanyAnalyseBean getCompanyAnalyse(@PathVariable Long companyId) {
