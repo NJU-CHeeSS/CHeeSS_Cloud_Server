@@ -20,4 +20,10 @@ public interface FollowCompanyRepository extends JpaRepository<FollowCompany, Fo
     @Query("select fc.companyID from FollowCompany fc where fc.userID=?1")
     List<Integer> findCompanyIDs(Long userID);
 
+    /**
+     * 获得受关注的企业id
+     * @return
+     */
+    @Query("select fc.companyID from FollowCompany fc")
+    List<Integer> findPopularCompanyIDs();
 }

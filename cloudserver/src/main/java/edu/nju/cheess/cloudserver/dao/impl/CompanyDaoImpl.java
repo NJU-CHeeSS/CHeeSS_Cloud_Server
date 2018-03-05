@@ -4,6 +4,7 @@ import edu.nju.cheess.cloudserver.dao.CompanyDao;
 import edu.nju.cheess.cloudserver.dao.HBaseHelper;
 import edu.nju.cheess.cloudserver.entity.Company;
 import edu.nju.cheess.cloudserver.entity.Job;
+import edu.nju.cheess.cloudserver.repository.FollowCompanyRepository;
 import org.apache.hadoop.hbase.filter.SubstringComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +21,15 @@ public class CompanyDaoImpl implements CompanyDao {
 
     private final JobDaoImpl jobDao;
 
+    private final FollowCompanyRepository followCompanyRepository;
+
     private static final String TABLE_NAME = "cloud:company";
 
     @Autowired
-    public CompanyDaoImpl(HBaseHelper hBaseHelper, JobDaoImpl jobDao) {
+    public CompanyDaoImpl(HBaseHelper hBaseHelper, JobDaoImpl jobDao,FollowCompanyRepository followCompanyRepository) {
         this.hBaseHelper = hBaseHelper;
         this.jobDao = jobDao;
+        this.followCompanyRepository=followCompanyRepository;
     }
 
     private Company convertMapToCompanyEntity(Map<String, String> data) {
@@ -91,8 +95,8 @@ public class CompanyDaoImpl implements CompanyDao {
 
     @Override
     public List<Company> getPopularCompanies() {
-        // TODO
-        return null;
+        List<Integer> followCompanies=followCompanyRepository.findPopularCompanyIDs();
+        return followCompanies.stream().map(companyId-> this.getCompanyById((long)companyId)).collect(Collectors.toList());
     }
 
     @Override

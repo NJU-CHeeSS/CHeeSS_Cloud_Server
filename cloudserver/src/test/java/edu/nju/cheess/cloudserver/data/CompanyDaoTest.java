@@ -40,4 +40,9 @@ public class CompanyDaoTest {
         jobs.forEach(j -> System.out.println(j.getTitle()));
     }
 
+    @Test
+    public void testPopularCompanies(){
+//        companyDao.getPopularCompanies();
+    }
+
 }
