@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by CLL on 18/1/5.
@@ -26,4 +27,7 @@ public interface FollowCompanyRepository extends JpaRepository<FollowCompany, Fo
      */
     @Query("select fc.companyID from FollowCompany fc")
     List<Integer> findPopularCompanyIDs();
+
+    @Query("select fc.companyID as id, count (fc.userID) as num from FollowCompany fc group by fc.companyID")
+    List<Map<Integer, Long>> findCompanyFollowNum();
 }

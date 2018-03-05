@@ -45,7 +45,9 @@ public class UserDaoTest {
 
     @Test
     public void followCompanyTest(){
-//        userDao.followCompany("chen",1);
+//        userDao.followCompany(Long.valueOf(1),Long.valueOf(3));
+//        userDao.followCompany(Long.valueOf(1),Long.valueOf(380));
+//        userDao.followCompany(Long.valueOf(1),Long.valueOf(2130));
     }
 
 

@@ -42,7 +42,7 @@ public class CompanyDaoTest {
 
     @Test
     public void testPopularCompanies(){
-//        companyDao.getPopularCompanies();
+        System.out.println(companyDao.getPopularCompanies());
     }
 
 }

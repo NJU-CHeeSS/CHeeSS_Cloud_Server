@@ -26,10 +26,10 @@ public class CompanyDaoImpl implements CompanyDao {
     private static final String TABLE_NAME = "cloud:company";
 
     @Autowired
-    public CompanyDaoImpl(HBaseHelper hBaseHelper, JobDaoImpl jobDao,FollowCompanyRepository followCompanyRepository) {
+    public CompanyDaoImpl(HBaseHelper hBaseHelper, JobDaoImpl jobDao, FollowCompanyRepository followCompanyRepository) {
         this.hBaseHelper = hBaseHelper;
         this.jobDao = jobDao;
-        this.followCompanyRepository=followCompanyRepository;
+        this.followCompanyRepository = followCompanyRepository;
     }
 
     private Company convertMapToCompanyEntity(Map<String, String> data) {
@@ -95,8 +95,20 @@ public class CompanyDaoImpl implements CompanyDao {
 
     @Override
     public List<Company> getPopularCompanies() {
-        List<Integer> followCompanies=followCompanyRepository.findPopularCompanyIDs();
-        return followCompanies.stream().map(companyId-> this.getCompanyById((long)companyId)).collect(Collectors.toList());
+        List<Integer> followCompanies = followCompanyRepository.findPopularCompanyIDs();
+//        followCompanies.sort(new Comparator<Map<Integer, Long>>() {
+//            @Override
+//            public int compare(Map<Integer, Long> o1, Map<Integer, Long> o2) {
+//                return (int) (o2.get("num") - o1.get("num"));
+//            }
+//        });
+//        List<Company> result = new ArrayList<>();
+//        for (Map<Integer, Long> followCompany : followCompanies) {
+//            result.add(this.getCompanyById(followCompany.get("id")));
+//        }
+//        return result;
+
+        return followCompanies.stream().map(company-> this.getCompanyById(company.longValue())).collect(Collectors.toList());
     }
 
     @Override
