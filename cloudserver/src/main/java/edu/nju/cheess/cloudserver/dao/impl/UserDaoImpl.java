@@ -42,7 +42,7 @@ public class UserDaoImpl implements UserDao {
         if (user == null) {
             return null;
         }
-        return new UserPasswordBean(user.getId(), username, user.getPassword());
+        return new UserPasswordBean(username, user.getPassword());
     }
 
     @Override

@@ -52,7 +52,7 @@ public class JobServiceImpl implements JobService {
 
         // 默认按照日期倒序排序
         List<Job> jobPage = jobDao.getJobByCondition(keyword,
-                new PageRequest(page - 1, size, new Sort(Sort.Direction.DESC, order == null ? "date" : order)));
+                new PageRequest(page - 1, size, new Sort(Sort.Direction.DESC, order.equals("") ? "date" : order)));
 
         List<JobInfoBean> beans = new ArrayList<>();
         for (Job job : jobPage) {
@@ -72,7 +72,7 @@ public class JobServiceImpl implements JobService {
 
         // 默认按照日期倒序排序
         List<Job> jobList = jobDao.getJobByCondition("",
-                new PageRequest(page - 1, size, new Sort(Sort.Direction.DESC, order == null ? "date" : order)));
+                new PageRequest(page - 1, size, new Sort(Sort.Direction.DESC, order.equals("") ? "date" : order)));
         List<JobInfoBean> beans = new ArrayList<>();
 
         for (Job job : jobList) {
