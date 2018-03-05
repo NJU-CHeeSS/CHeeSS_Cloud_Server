@@ -2,7 +2,6 @@ package edu.nju.cheess.cloudserver.data;
 
 import edu.nju.cheess.cloudserver.bean.UserInfoBean;
 import edu.nju.cheess.cloudserver.dao.UserDao;
-import edu.nju.cheess.cloudserver.entity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,20 +28,20 @@ public class UserDaoTest {
         System.out.println(userDao.getUserPasswordByName("chen").getPassword());
     }
 
-    @Test
-    public void registerTest(){
-        userDao.addUser(new User("wang","123456"));
-    }
+//    @Test
+//    public void registerTest(){
+//        userDao.addUser(new User("wang","123456"));
+//    }
 
-    @Test
-    public void updatePasswordTest(){
-        userDao.updateUserPassword("wang","123456");
-    }
+//    @Test
+//    public void updatePasswordTest(){
+//        userDao.updateUserPassword("wang","123456");
+//    }
 
-    @Test
-    public void updateUserInfoTest(){
-        userDao.updateUserInfo(new User("wang",1,"南京",21,"软件工程","本科","java",1));
-    }
+//    @Test
+//    public void updateUserInfoTest(){
+//        userDao.updateUserInfo(new User("wang",1,"南京",21,"软件工程","本科","java",1));
+//    }
 
     @Test
     public void followCompanyTest(){

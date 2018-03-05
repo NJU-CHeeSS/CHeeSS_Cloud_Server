@@ -65,6 +65,9 @@ public class UserInfoBean {
      */
     private List<Company> followCompanies;
 
+    public UserInfoBean() {
+    }
+
     public UserInfoBean(Long userId, String username, Integer sex, String city, int age, String major, String diploma, String skill, double experience, List<Company> followCompanies) {
         this.userId = userId;
         this.username = username;

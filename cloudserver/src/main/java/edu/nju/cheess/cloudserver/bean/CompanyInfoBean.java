@@ -39,6 +39,9 @@ public class CompanyInfoBean {
      */
     private List<String> keywords;
 
+    public CompanyInfoBean() {
+    }
+
     public CompanyInfoBean(Long companyId, String name, String type, String industry, String scale, String introduction, List<String> keywords) {
         this.companyId = companyId;
         this.name = name;
