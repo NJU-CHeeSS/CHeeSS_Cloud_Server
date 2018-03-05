@@ -104,9 +104,10 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<CompanyMiniBean> getCompaniesRank(String industry) {
+        String[] industries=industry.trim().split("/");
         Map<Integer,Integer> sizes=new HashMap<>();
         //获得某一行业的公司
-        List<Company> companies=companyDao.getCompanyByIndustry(industry);
+        List<Company> companies=companyDao.getCompanyByIndustry(industries[0]);
         for (int i=0;i<companies.size();i++) {
             sizes.put(i,getSizeNumber(companies.get(i).getSize()));
         }
