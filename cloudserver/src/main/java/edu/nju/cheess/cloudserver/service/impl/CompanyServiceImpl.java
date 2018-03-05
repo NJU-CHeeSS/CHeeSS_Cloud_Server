@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
+    private static final int RANK_NUM=15;
+
     @Autowired
     private CompanyDao companyDao;
 
@@ -124,7 +126,7 @@ public class CompanyServiceImpl implements CompanyService {
         Company temp=null;
         for(Map.Entry<Integer,Integer> mapping:list){
             temp=companies.get(mapping.getKey());
-            if (temp!=null) {
+            if (temp!=null&&result.size()<RANK_NUM) {
                 result.add(new CompanyMiniBean(temp.getId(), temp.getName(), temp.getIndustry(), getKeywordsByIntroduction(temp.getIntroduction())));
             }
         }
