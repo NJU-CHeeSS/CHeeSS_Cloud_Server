@@ -2,7 +2,9 @@ package edu.nju.cheess.cloudserver.dao.impl;
 
 import edu.nju.cheess.cloudserver.bean.UserInfoBean;
 import edu.nju.cheess.cloudserver.bean.UserPasswordBean;
+import edu.nju.cheess.cloudserver.dao.CompanyDao;
 import edu.nju.cheess.cloudserver.dao.UserDao;
+import edu.nju.cheess.cloudserver.entity.Company;
 import edu.nju.cheess.cloudserver.entity.FollowCompany;
 import edu.nju.cheess.cloudserver.entity.User;
 import edu.nju.cheess.cloudserver.repository.FollowCompanyRepository;
@@ -10,6 +12,7 @@ import edu.nju.cheess.cloudserver.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,6 +24,8 @@ public class UserDaoImpl implements UserDao {
     UserRepository userRepository;
     @Autowired
     FollowCompanyRepository followCompanyRepository;
+    @Autowired
+    CompanyDao companyDao;
 
     @Override
     public UserInfoBean getUserByName(String userName) {
@@ -30,10 +35,13 @@ public class UserDaoImpl implements UserDao {
         }
         List<Integer> companyIDs = followCompanyRepository.findCompanyIDs(user.getId());
         System.out.println(companyIDs.size());
-        //TODO
+        List<Company> followCompanies=new ArrayList<>();
+        for (long companyId:companyIDs) {
+            followCompanies.add(companyDao.getCompanyById(companyId));
+        }
         //hbase中取数据，暂时为null
         return new UserInfoBean(user.getId(), user.getUsername(), user.getSex(), user.getCity(),
-                user.getAge(), user.getMajor(), user.getDiploma(), user.getSkill(), user.getExperience(), null);
+                user.getAge(), user.getMajor(), user.getDiploma(), user.getSkill(), user.getExperience(), followCompanies);
     }
 
     @Override
@@ -73,7 +81,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean isFollowCompany(Long userId, Long companyID) {
-        // TODO
-        return false;
+        List<Integer> companyIDs = followCompanyRepository.findCompanyIDs(userId);
+        return companyIDs.contains(companyID.intValue());
     }
 }
