@@ -14,6 +14,9 @@ public class CompanyAnalyseBean {
         this.averageSalary = averageSalary;
     }
 
+    public CompanyAnalyseBean() {
+    }
+
     public double getMaxSalary() {
         return maxSalary;
     }

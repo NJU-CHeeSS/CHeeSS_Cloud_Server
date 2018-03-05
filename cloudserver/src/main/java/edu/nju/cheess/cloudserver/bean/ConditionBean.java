@@ -23,6 +23,9 @@ public class ConditionBean {
      */
     private String property;
 
+    public ConditionBean() {
+    }
+
     public ConditionBean(String location, LocalDateTime earlyReleaseDate, String diploma, String property) {
         this.location = location;
         this.earlyReleaseDate = earlyReleaseDate;

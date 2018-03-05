@@ -23,6 +23,9 @@ public class CompanyMiniBean {
      */
     private List<String> keywords;
 
+    public CompanyMiniBean() {
+    }
+
     public CompanyMiniBean(Long companyId, String name, String industry, List<String> keywords) {
         this.companyId = companyId;
         this.name = name;

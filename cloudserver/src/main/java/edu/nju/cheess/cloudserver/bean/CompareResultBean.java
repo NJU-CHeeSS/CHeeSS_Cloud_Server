@@ -57,6 +57,9 @@ public class CompareResultBean {
     private List<String> job1Keywords;
     private List<String> job2Keywords;
 
+    public CompareResultBean() {
+    }
+
     public CompareResultBean(String job1Name, String job2Name, String company1Name, String company2Name, List<String> company1Keywords, List<String> company2Keywords, String job1Property, String job2Property, Integer job1MinSalary, Integer job2MinSalary, Integer job1MaxSalary, Integer job2MaxSalary, String job1Location, String job2Location, String job1PeopleNum, String job2PeopleNum, List<String> job1Keywords, List<String> job2Keywords) {
         this.job1Name = job1Name;
         this.job2Name = job2Name;
