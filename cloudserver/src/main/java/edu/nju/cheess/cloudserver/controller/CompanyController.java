@@ -5,6 +5,7 @@ import edu.nju.cheess.cloudserver.bean.CompanyInfoBean;
 import edu.nju.cheess.cloudserver.bean.CompanyMiniBean;
 import edu.nju.cheess.cloudserver.bean.JobInfoBean;
 import edu.nju.cheess.cloudserver.service.CompanyService;
+import edu.nju.cheess.cloudserver.service.SparkService;
 import edu.nju.cheess.cloudserver.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,19 @@ public class CompanyController {
     @Autowired
     private CompanyService companyService;
 
+    @Autowired
+    private SparkService sparkService;
+
+    /**
+     * TODO 测试Spark
+     */
+    @ResponseBody
+    @GetMapping("/spark")
+    public List<String> getCompanyTypes(@RequestParam String table,
+                                        @RequestParam String column) {
+        return sparkService.getCompanyType(table, column);
+    }
+
     /**
      * 获得企业信息
      *
@@ -27,7 +41,7 @@ public class CompanyController {
      */
     @ResponseBody
     @RequestMapping(
-            value = "/{companyId}",
+            value = "/id/{companyId}",
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public CompanyInfoBean getCompanyById(@PathVariable Long companyId) {
@@ -43,7 +57,7 @@ public class CompanyController {
      */
     @ResponseBody
     @RequestMapping(
-            value = "/{companyName}",
+            value = "/name/{companyName}",
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public CompanyInfoBean getCompanyByName(@PathVariable String companyName) {

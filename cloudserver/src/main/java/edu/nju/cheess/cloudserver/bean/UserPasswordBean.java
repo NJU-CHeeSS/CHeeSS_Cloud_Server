@@ -12,6 +12,8 @@ public class UserPasswordBean {
      */
     private String password;
 
+    public UserPasswordBean() {}
+
     public UserPasswordBean(String username, String password) {
         this.username = username;
         this.password = password;
