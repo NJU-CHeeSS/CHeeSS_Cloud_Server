@@ -96,7 +96,7 @@ public class CompanyServiceImpl implements CompanyService {
         String[] industries=industry.split("/");
         List<Company> temp=typeCompanies;
         for (String industry1 : industries) {
-            temp.retainAll(companyDao.getCompanyByIndustry(industry1));
+            temp.addAll(companyDao.getCompanyByIndustry(industry1));
         }
         result.addAll(temp.stream().map(c -> new CompanyMiniBean(c.getId(), c.getName(), c.getIndustry(), getKeywordsByIntroduction(c.getIntroduction()))).collect(Collectors.toList()));
         return result;
