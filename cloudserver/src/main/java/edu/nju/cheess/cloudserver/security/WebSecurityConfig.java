@@ -27,11 +27,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers(HttpMethod.POST, "/").permitAll()
-                .antMatchers("/api/user/sign-up").permitAll()
-                .antMatchers("/api/user/**").authenticated()
+                .antMatchers("/api/users/sign-up").permitAll()
+                .antMatchers("/api/users/**").authenticated()
                 .and()
                 // We filter the api/login requests
-                .addFilterBefore(new JWTSignInFilter("/api/user/sign-in", authenticationManager()),
+                .addFilterBefore(new JWTSignInFilter("/api/users/sign-in", authenticationManager()),
                         UsernamePasswordAuthenticationFilter.class)
                 // And filter other requests to check the presence of JWT in header
                 .addFilterBefore(new JWTAuthenticationFilter(),
