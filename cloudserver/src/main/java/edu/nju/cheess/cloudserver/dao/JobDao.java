@@ -47,4 +47,14 @@ public interface JobDao {
      * @return 职业列表
      */
     List<Job> getJobs(Pageable pageable);
+
+    /**
+     * 获取推荐职业
+     *
+     * @param diploma   学历
+     * @param skills    技能列表
+     * @return          职业列表
+     */
+    List<Job> getRecommendJobs(String location, String diploma, List<String> skills);
+
 }

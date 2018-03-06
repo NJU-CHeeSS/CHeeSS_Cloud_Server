@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class JobServiceImpl implements JobService {
@@ -104,10 +106,19 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public Page<JobInfoBean> getRecommendedJobs(String order, int size, int page, Long userId) {
-        User user = userRepository.findOne(userId);
+        Page<JobInfoBean> res = new Page<>();
+        res.setOrder(order);
+        res.setSize(size);
+        res.setPage(page);
 
-        // TODO
-        return null;
+        User user = userRepository.findOne(userId);
+        List<String> skills = Arrays.asList(user.getSkill().split(" "));
+
+        List<Job> jobs = jobDao.getRecommendJobs(user.getCity(), user.getDiploma(), skills);
+
+        res.setSize(jobs.size());
+        res.setResult(jobs.stream().map(this::jobToJobInfoBean).collect(Collectors.toList()));
+        return res;
     }
 
     @Override

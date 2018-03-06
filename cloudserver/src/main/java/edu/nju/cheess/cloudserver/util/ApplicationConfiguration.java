@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Component
 public class ApplicationConfiguration implements Serializable {
 
-    private final JavaSparkContext JAVA_SPARK_CONTEXT;
+    private final transient JavaSparkContext JAVA_SPARK_CONTEXT;
 
     public ApplicationConfiguration() {
         SparkConf SPARK_CONF = new SparkConf()
@@ -43,6 +43,5 @@ public class ApplicationConfiguration implements Serializable {
         configuration.set(TableInputFormat.SCAN, Base64.encodeBytes(ProtobufUtil.toScan(scan).toByteArray()));
         return configuration;
     }
-
 
 }
