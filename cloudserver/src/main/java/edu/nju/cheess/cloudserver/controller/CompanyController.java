@@ -24,16 +24,6 @@ public class CompanyController {
     private SparkService sparkService;
 
     /**
-     * TODO 测试Spark
-     */
-    @ResponseBody
-    @GetMapping("/spark")
-    public List<String> getCompanyTypes(@RequestParam String table,
-                                        @RequestParam String column) {
-        return sparkService.getCompanyType(table, column);
-    }
-
-    /**
      * 获得企业信息
      *
      * @param companyId 企业id
