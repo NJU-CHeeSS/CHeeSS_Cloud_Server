@@ -21,7 +21,7 @@ public interface JobDao {
      * @param jobType 职位类型
      * @return 职位列表
      */
-    List<Job> getJobByJobType(String jobType);
+    List<Job> getJobByJobType(List<String> jobType);
 
     /**
      * 根据职业类型和城市获得职位列表
@@ -29,7 +29,7 @@ public interface JobDao {
      * @param jobType 职位类型
      * @return 职位列表
      */
-    List<Job> getJobByJobTypeAndCity(String jobType, String city);
+    List<Job> getJobByJobTypeAndCity(List<String> jobType, String city);
 
     /**
      * 根据关键词和条件分页获得职位列表

@@ -1,7 +1,5 @@
 package edu.nju.cheess.cloudserver.bean;
 
-import java.time.LocalDateTime;
-
 public class ConditionBean {
     /**
      * 工作地点
@@ -11,7 +9,7 @@ public class ConditionBean {
     /**
      * 最早发布日期
      */
-    private LocalDateTime earlyReleaseDate;
+    private String earlyReleaseDate;
 
     /**
      * 学历要求
@@ -26,7 +24,7 @@ public class ConditionBean {
     public ConditionBean() {
     }
 
-    public ConditionBean(String location, LocalDateTime earlyReleaseDate, String diploma, String property) {
+    public ConditionBean(String location, String earlyReleaseDate, String diploma, String property) {
         this.location = location;
         this.earlyReleaseDate = earlyReleaseDate;
         this.diploma = diploma;
@@ -41,11 +39,11 @@ public class ConditionBean {
         this.location = location;
     }
 
-    public LocalDateTime getEarlyReleaseDate() {
+    public String getEarlyReleaseDate() {
         return earlyReleaseDate;
     }
 
-    public void setEarlyReleaseDate(LocalDateTime earlyReleaseDate) {
+    public void setEarlyReleaseDate(String earlyReleaseDate) {
         this.earlyReleaseDate = earlyReleaseDate;
     }
 

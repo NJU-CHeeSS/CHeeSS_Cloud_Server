@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -76,13 +77,22 @@ public class JobServiceImpl implements JobService {
         List<JobInfoBean> beans = new ArrayList<>();
 
         for (Job job : jobList) {
-            List<String> jobTypes = new ArrayList<>();
-            Collections.addAll(jobTypes, job.getJobType().split(" "));
-
-            if (conditionBean.getLocation() != null && conditionBean.getLocation().equals(job.getLocation()) &&
-                    conditionBean.getEarlyReleaseDate() != null && conditionBean.getEarlyReleaseDate().isBefore(job.getDate()) &&
-                    conditionBean.getDiploma() != null && conditionBean.getDiploma().equals(job.getEducation()) &&
-                    conditionBean.getProperty() != null && jobTypes.contains(conditionBean.getProperty())) {
+            LocalDateTime time = LocalDateTime.now();
+            switch (conditionBean.getEarlyReleaseDate()) {
+                case "近24小时":
+                    time = time.minusDays(1);
+                    break;
+                case "上周":
+                    time = time.minusWeeks(1);
+                    break;
+                case "上月":
+                    time = time.minusMonths(1);
+                    break;
+            }
+            if (!conditionBean.getLocation().equals("不限") && conditionBean.getLocation().equals(job.getLocation()) &&
+                    !conditionBean.getEarlyReleaseDate().equals("不限") && time.isBefore(job.getDate()) &&
+                    !conditionBean.getDiploma().equals("不限") && conditionBean.getDiploma().equals(job.getEducation()) &&
+                    !conditionBean.getProperty().equals("不限") && jobDao.getJobByJobType(getJobTypeList(conditionBean.getProperty())).contains(job)) {
 
                 beans.add(jobToJobInfoBean(job));
             }
@@ -112,7 +122,7 @@ public class JobServiceImpl implements JobService {
         Job job = jobDao.getJobById(jobId);
         List<JobInfoBean> relatedJobs = new ArrayList<>();
         for (String jobType : job.getJobType().split(" ")) {
-            for (Job relatedJob : jobDao.getJobByJobType(jobType)) {
+            for (Job relatedJob : jobDao.getJobByJobType(getJobTypeList(jobType))) {
                 relatedJobs.add(jobToJobInfoBean(relatedJob));
             }
         }
@@ -121,8 +131,8 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public TreatmentInfoBean analyzeTreatment(String jobType, String city) {
-        List<Job> countryJobs = jobDao.getJobByJobType(jobType);
-        List<Job> cityJobs = jobDao.getJobByJobTypeAndCity(jobType, city);
+        List<Job> countryJobs = jobDao.getJobByJobType(getJobTypeList(jobType));
+        List<Job> cityJobs = jobDao.getJobByJobTypeAndCity(getJobTypeList(jobType), city);
 
         /* 全国的职位 */
         double countryLowSum = 0.0, countryHighSum = 0.0;
@@ -223,7 +233,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public SkillInfoBean analyseSkills(String jobType) {
-        List<Job> jobs = jobDao.getJobByJobType(jobType);
+        List<Job> jobs = jobDao.getJobByJobType(getJobTypeList(jobType));
         List<String> keywords = new ArrayList<>();
         List<Integer> keywordsNum = new ArrayList<>();
 
@@ -385,5 +395,12 @@ public class JobServiceImpl implements JobService {
     private List<String> getKeywordsByInformation(String information) {
         //调用HanLP TextRank算法
         return HanLP.extractKeyword(information, 3);
+    }
+
+    private List<String> getJobTypeList(String jobType) {
+        List<String> jobTypeList = new ArrayList<>();
+        Collections.addAll(jobTypeList, jobType.replace(" ", "").split("\\|"));
+
+        return jobTypeList;
     }
 }

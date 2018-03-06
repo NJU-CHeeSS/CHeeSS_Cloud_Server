@@ -140,9 +140,11 @@ public class JobController {
     @ResponseBody
     @RequestMapping(
             value = "/jobs/analyzeTreatment",
+            params = {"jobType", "city"},
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
-    public TreatmentInfoBean analyzeTreatment(String jobType, String city) {
+    public TreatmentInfoBean analyzeTreatment(@RequestParam(value = "jobType") String jobType,
+                                              @RequestParam(value = "city") String city) {
 
         return jobService.analyzeTreatment(jobType, city);
     }
@@ -155,9 +157,11 @@ public class JobController {
     @ResponseBody
     @RequestMapping(
             value = "/jobs/compare",
+            params = {"jobId1", "jobId2"},
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
-    public CompareResultBean compareJobs(Long jobId1, Long jobId2) {
+    public CompareResultBean compareJobs(@RequestParam(value = "jobId1") Long jobId1,
+                                         @RequestParam(value = "jobId2") Long jobId2) {
 
         return jobService.compareJobs(jobId1, jobId2);
     }
@@ -170,9 +174,10 @@ public class JobController {
     @ResponseBody
     @RequestMapping(
             value = "/jobs/skill",
+            params = {"jobType"},
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
-    public SkillInfoBean analyseSkills(String jobType) {
+    public SkillInfoBean analyseSkills(@RequestParam(value = "jobType") String jobType) {
 
         return jobService.analyseSkills(jobType);
     }

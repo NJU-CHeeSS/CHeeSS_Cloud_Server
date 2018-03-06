@@ -60,7 +60,7 @@ public class JobDaoImpl implements JobDao {
     }
 
     @Override
-    public List<Job> getJobByJobType(String jobType) {
+    public List<Job> getJobByJobType(List<String> jobType) {
         List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(
                 TABLE_NAME, "info", "job_type", new SubstringComparator(jobType));
 
@@ -68,7 +68,7 @@ public class JobDaoImpl implements JobDao {
     }
 
     @Override
-    public List<Job> getJobByJobTypeAndCity(String jobType, String city) {
+    public List<Job> getJobByJobTypeAndCity(List<String> jobType, String city) {
         FilterList filterList = new FilterList();
         // 职位类型子串过滤器
         SubstringComparator jobTypeComparator = new SubstringComparator(jobType);
