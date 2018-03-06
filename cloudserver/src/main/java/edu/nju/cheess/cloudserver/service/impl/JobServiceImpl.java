@@ -135,15 +135,14 @@ public class JobServiceImpl implements JobService {
         int count = 0;
 
         for (String jobType : job.getJobType().split(" ")) {
-
             for (Job relatedJob : jobDao.getJobByJobType(getJobTypeList(jobType))) {
-                if (!relatedJobs.contains(jobToJobInfoBean(relatedJob))) {
+                if (!relatedJobs.contains(jobToJobInfoBean(relatedJob)) && relatedJob.getId().equals(jobId)) {
                     relatedJobs.add(jobToJobInfoBean(relatedJob));
                     count++;
                 }
 
                 if (count == 10) {
-                    break;
+                    return relatedJobs;
                 }
             }
         }
