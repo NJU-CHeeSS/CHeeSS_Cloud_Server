@@ -69,7 +69,7 @@ public class CompanyServiceImpl implements CompanyService {
         List<Job> jobs = companyDao.getJobs(companyId);
         for (Job job : jobs) {
             jobInfoBeans.add(new JobInfoBean(job.getId(), job.getTitle(), job.getCompany(), job.getJobType(),
-                    (int) job.getLowMoney(), (int) job.getHighMoney(), job.getLocation(), job.getDate(),
+                    (int) job.getLowMoney(), (int) job.getHighMoney(), job.getLocation(), String.valueOf(job.getDate()).split("T")[0],
                     job.getInformation(), job.getEducation(), job.getTotalPeople(), job.getLowExperience(), job.getHighExperience()));
         }
 

@@ -42,7 +42,7 @@ public class JobInfoBean {
     /**
      * 发布日期
      */
-    private LocalDateTime releaseDate;
+    private String releaseDate;
 
     /**
      * 职位简介与福利
@@ -72,7 +72,7 @@ public class JobInfoBean {
     public JobInfoBean() {
     }
 
-    public JobInfoBean(Long jobId, String jobName, String companyName, String property, Integer minSalary, Integer maxSalary, String location, LocalDateTime releaseDate, String information, String diploma, String peopleNum, Integer minExperience, Integer maxExperience) {
+    public JobInfoBean(Long jobId, String jobName, String companyName, String property, Integer minSalary, Integer maxSalary, String location, String releaseDate, String information, String diploma, String peopleNum, Integer minExperience, Integer maxExperience) {
         this.jobId = jobId;
         this.jobName = jobName;
         this.companyName = companyName;
@@ -144,11 +144,11 @@ public class JobInfoBean {
         this.location = location;
     }
 
-    public LocalDateTime getReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(LocalDateTime releaseDate) {
+    public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 

@@ -33,7 +33,7 @@ public class JobServiceImpl implements JobService {
 
     private JobInfoBean jobToJobInfoBean(Job job) {
         return new JobInfoBean(job.getId(), job.getTitle(), job.getCompany(), job.getJobType(),
-                (int) job.getLowMoney(), (int) job.getHighMoney(), job.getLocation(), job.getDate(),
+                (int) job.getLowMoney(), (int) job.getHighMoney(), job.getLocation(), String.valueOf(job.getDate()).split("T")[0],
                 job.getInformation(), job.getEducation(), job.getTotalPeople(), job.getLowExperience(), job.getHighExperience());
     }
 
@@ -126,8 +126,10 @@ public class JobServiceImpl implements JobService {
         for (String jobType : job.getJobType().split(" ")) {
 
             for (Job relatedJob : jobDao.getJobByJobType(getJobTypeList(jobType))) {
-                relatedJobs.add(jobToJobInfoBean(relatedJob));
-                count++;
+                if (!relatedJobs.contains(jobToJobInfoBean(relatedJob))) {
+                    relatedJobs.add(jobToJobInfoBean(relatedJob));
+                    count++;
+                }
 
                 if (count == 10) {
                     break;
