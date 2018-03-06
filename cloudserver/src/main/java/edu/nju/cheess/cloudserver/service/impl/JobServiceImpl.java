@@ -121,9 +121,17 @@ public class JobServiceImpl implements JobService {
     public List<JobInfoBean> getRelatedJobs(Long jobId) {
         Job job = jobDao.getJobById(jobId);
         List<JobInfoBean> relatedJobs = new ArrayList<>();
+        int count = 0;
+
         for (String jobType : job.getJobType().split(" ")) {
+
             for (Job relatedJob : jobDao.getJobByJobType(getJobTypeList(jobType))) {
                 relatedJobs.add(jobToJobInfoBean(relatedJob));
+                count++;
+
+                if (count == 10) {
+                    break;
+                }
             }
         }
         return relatedJobs;
