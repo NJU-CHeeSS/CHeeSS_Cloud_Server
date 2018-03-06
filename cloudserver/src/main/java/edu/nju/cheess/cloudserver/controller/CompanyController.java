@@ -5,7 +5,6 @@ import edu.nju.cheess.cloudserver.bean.CompanyInfoBean;
 import edu.nju.cheess.cloudserver.bean.CompanyMiniBean;
 import edu.nju.cheess.cloudserver.bean.JobInfoBean;
 import edu.nju.cheess.cloudserver.service.CompanyService;
-import edu.nju.cheess.cloudserver.service.SparkService;
 import edu.nju.cheess.cloudserver.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,9 +18,6 @@ public class CompanyController {
 
     @Autowired
     private CompanyService companyService;
-
-    @Autowired
-    private SparkService sparkService;
 
     /**
      * 获得企业信息
