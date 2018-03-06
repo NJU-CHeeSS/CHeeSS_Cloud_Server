@@ -4,6 +4,7 @@ import edu.nju.cheess.cloudserver.dao.HBaseHelper;
 import edu.nju.cheess.cloudserver.dao.JobDao;
 import edu.nju.cheess.cloudserver.entity.Job;
 import edu.nju.cheess.cloudserver.util.DateUtil;
+import edu.nju.cheess.cloudserver.util.Diploma;
 import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,31 +57,38 @@ public class JobDaoImpl implements JobDao {
         Map<String, String> data = hBaseHelper.getData(TABLE_NAME, String.valueOf(id));
 
         return convertMapToJobEntity(data);
-
     }
 
     @Override
     public List<Job> getJobByJobType(List<String> jobType) {
-        List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(
-                TABLE_NAME, "info", "job_type", new SubstringComparator(jobType));
+        FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ONE);
+        jobType.forEach(t -> filterList
+                .addFilter(new SingleColumnValueFilter(
+                        Bytes.toBytes("info"), Bytes.toBytes("job_type"),
+                        CompareFilter.CompareOp.EQUAL, new SubstringComparator(t)
+        )));
+        List<Map<String, String>> dataList = hBaseHelper.getDataByFilterList(TABLE_NAME, filterList);
 
         return dataList.stream().map(this::convertMapToJobEntity).collect(Collectors.toList());
     }
 
     @Override
     public List<Job> getJobByJobTypeAndCity(List<String> jobType, String city) {
-        FilterList filterList = new FilterList();
-        // 职位类型子串过滤器
-        SubstringComparator jobTypeComparator = new SubstringComparator(jobType);
-        Filter jobTypeFilter = new SingleColumnValueFilter(
-                Bytes.toBytes("info"), Bytes.toBytes("job_type"), CompareFilter.CompareOp.EQUAL, jobTypeComparator);
+        // 职位类型过滤列表
+        FilterList jobTypeFilterList = new FilterList(FilterList.Operator.MUST_PASS_ONE);
+        jobType.forEach(t -> jobTypeFilterList
+                .addFilter(new SingleColumnValueFilter(
+                        Bytes.toBytes("info"), Bytes.toBytes("job_type"),
+                        CompareFilter.CompareOp.EQUAL, new SubstringComparator(t)
+        )));
 
         // 城市过滤器
-        SubstringComparator cityComparator = new SubstringComparator(city);
         Filter cityFilter = new SingleColumnValueFilter(
-                Bytes.toBytes("info"), Bytes.toBytes("location"), CompareFilter.CompareOp.EQUAL, cityComparator);
+                Bytes.toBytes("info"), Bytes.toBytes("location"),
+                CompareFilter.CompareOp.EQUAL, new SubstringComparator(city));
 
-        filterList.addFilter(jobTypeFilter);
+        FilterList filterList = new FilterList();
+        filterList.addFilter(jobTypeFilterList);
         filterList.addFilter(cityFilter);
 
         List<Map<String, String>> dataList = hBaseHelper.getDataByFilterList(TABLE_NAME, filterList);
@@ -90,7 +98,8 @@ public class JobDaoImpl implements JobDao {
 
     @Override
     public List<Job> getJobByCondition(String keyword, Pageable pageable) {
-        List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(TABLE_NAME, "info", "name", keyword);
+        List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(
+                TABLE_NAME, "info", "title", new SubstringComparator(keyword));
 
         return dataList.stream().map(this::convertMapToJobEntity).collect(Collectors.toList());
     }
@@ -100,6 +109,35 @@ public class JobDaoImpl implements JobDao {
         List<Map<String, String>> dataList = hBaseHelper.getDataByPage(TABLE_NAME, pageable.getPageSize(), pageable.getPageNumber());
 
         return dataList.stream().map(this::convertMapToJobEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Job> getRecommendJobs(String location, String diploma, List<String> skills) {
+        FilterList skillFilterList = new FilterList(FilterList.Operator.MUST_PASS_ONE);
+        skills.forEach(s -> skillFilterList
+                .addFilter(new SingleColumnValueFilter(
+                        Bytes.toBytes("info"), Bytes.toBytes("information"),
+                        CompareFilter.CompareOp.EQUAL, new SubstringComparator(s)
+        )));
+
+        Filter locationFilter = new SingleColumnValueFilter(
+                Bytes.toBytes("info"), Bytes.toBytes("location"),
+                CompareFilter.CompareOp.EQUAL, new SubstringComparator(location));
+
+        FilterList filterList = new FilterList();
+        filterList.addFilter(skillFilterList);
+        filterList.addFilter(locationFilter);
+
+        Diploma diplomaEnum = Diploma.stringToDiploma(diploma);
+
+        List<Map<String, String>> dataList = hBaseHelper.getDataByFilterList(TABLE_NAME, filterList);
+
+        return dataList.stream()
+                .filter(d -> {
+                    Diploma education = Diploma.stringToDiploma(d.get("education"));
+                    return diplomaEnum == null || education == null || education.ordinal() <= diplomaEnum.ordinal();})
+                .map(this::convertMapToJobEntity)
+                .collect(Collectors.toList());
     }
 
 }

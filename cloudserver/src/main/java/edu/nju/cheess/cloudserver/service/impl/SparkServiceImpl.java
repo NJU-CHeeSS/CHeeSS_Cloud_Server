@@ -9,14 +9,17 @@ import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import scala.Tuple2;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 @Service
-public class SparkServiceImpl implements SparkService {
+public class SparkServiceImpl implements SparkService, Serializable {
 
     private final ApplicationConfiguration appConf;
 
@@ -35,8 +38,15 @@ public class SparkServiceImpl implements SparkService {
                     .javaSparkContext()
                     .newAPIHadoopRDD(appConf.hBaseConfiguration(table, scan),
                     TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-            JavaRDD<String> types = rdd
-                    .map(tuple -> Bytes.toString(tuple._2.getValue(Bytes.toBytes("info"), Bytes.toBytes(column))));
+//            JavaRDD<String> types = rdd
+//                    .map(tuple -> Bytes.toString(tuple._2.getValue(Bytes.toBytes("info"), Bytes.toBytes(column))));
+
+            JavaRDD<String> types = rdd.map(new Function<Tuple2<ImmutableBytesWritable,Result>, String>() {
+                @Override
+                public String call(Tuple2<ImmutableBytesWritable, Result> tuple) {
+                    return Bytes.toString(tuple._2.getValue(Bytes.toBytes("info"), Bytes.toBytes(column)));
+                }
+            });
 
             return types.distinct().collect();
         } catch (IOException e) {
