@@ -154,7 +154,9 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public String getCompanySize(String name) {
-        System.out.println(name);
+        if (companyDao.getCompanyByName(name) == null) {
+            return "未知";
+        }
 
         String rawSize = companyDao.getCompanyByName(name).getSize();
         String regex = "[0-9]+人";

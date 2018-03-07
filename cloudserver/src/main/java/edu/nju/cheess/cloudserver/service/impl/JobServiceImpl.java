@@ -202,7 +202,7 @@ public class JobServiceImpl implements JobService {
             cityHighest = (cityHighest > cityHigh) ? cityHighest : cityHigh;
 
             String size = companyService.getCompanySize(cityJob.getCompany());
-            if (!sizeList.contains(size)) {
+            if (!size.equals("未知") && !sizeList.contains(size)) {
                 sizeList.add(size);
             }
 
