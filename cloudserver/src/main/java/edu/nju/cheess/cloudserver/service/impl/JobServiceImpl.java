@@ -33,7 +33,7 @@ public class JobServiceImpl implements JobService {
     @Autowired
     CompanyService companyService;
 
-    private static final String[] REQUIRE_BEGINNER={"任职资格：","任职要求：","岗位要求："};
+    private static final String[] REQUIRE_BEGINNER = {"任职资格：", "任职要求：", "岗位要求："};
 
     private JobInfoBean jobToJobInfoBean(Job job) {
         return new JobInfoBean(job.getId(), job.getTitle(), job.getCompany(), job.getJobType(),
@@ -179,7 +179,9 @@ public class JobServiceImpl implements JobService {
         List<AreaSalaryBean> areaSalary = new ArrayList<>();
         for (String area : areaList) {
             List<Integer> areaStatisticResult = getStatisticResult(countryJobs, area, "area");
-            areaSalary.add(new AreaSalaryBean(area, areaStatisticResult.get(0), areaStatisticResult.get(1), areaStatisticResult.get(2)));
+            if (areaStatisticResult != null) {
+                areaSalary.add(new AreaSalaryBean(area, areaStatisticResult.get(0), areaStatisticResult.get(1), areaStatisticResult.get(2)));
+            }
         }
 
 
@@ -218,19 +220,25 @@ public class JobServiceImpl implements JobService {
         List<SizeSalaryBean> sizeSalary = new ArrayList<>();
         for (String size : sizeList) {
             List<Integer> sizeStatisticResult = getStatisticResult(cityJobs, size, "size");
-            sizeSalary.add(new SizeSalaryBean(size, sizeStatisticResult.get(0), sizeStatisticResult.get(1), sizeStatisticResult.get(2)));
+            if (sizeStatisticResult != null) {
+                sizeSalary.add(new SizeSalaryBean(size, sizeStatisticResult.get(0), sizeStatisticResult.get(1), sizeStatisticResult.get(2)));
+            }
         }
 
         List<EducationSalaryBean> educationSalary = new ArrayList<>();
         for (String education : educationList) {
             List<Integer> educationStatisticResult = getStatisticResult(cityJobs, education, "education");
-            educationSalary.add(new EducationSalaryBean(education, educationStatisticResult.get(0), educationStatisticResult.get(1), educationStatisticResult.get(2)));
+            if (educationStatisticResult != null) {
+                educationSalary.add(new EducationSalaryBean(education, educationStatisticResult.get(0), educationStatisticResult.get(1), educationStatisticResult.get(2)));
+            }
         }
 
         List<ExperienceSalaryBean> experienceSalary = new ArrayList<>();
         for (int experience = 0; experience < maxExperience; experience++) {
             List<Integer> experienceStatisticResult = getStatisticResult(cityJobs, String.valueOf(experience), "experience");
-            experienceSalary.add(new ExperienceSalaryBean(String.valueOf(experience) + "年", experienceStatisticResult.get(0), experienceStatisticResult.get(1), experienceStatisticResult.get(2)));
+            if (experienceStatisticResult != null) {
+                experienceSalary.add(new ExperienceSalaryBean(String.valueOf(experience) + "年", experienceStatisticResult.get(0), experienceStatisticResult.get(1), experienceStatisticResult.get(2)));
+            }
         }
 
         return new TreatmentInfoBean(jobType, city,
@@ -259,18 +267,18 @@ public class JobServiceImpl implements JobService {
         List<String> keywords = new ArrayList<>();
         List<Integer> keywordsNum = new ArrayList<>();
 
-        String information="";
-        String require="";
+        String information = "";
+        String require = "";
 
         for (Job job : jobs) {
-            information=job.getInformation();
-            for (String beginner:REQUIRE_BEGINNER) {
+            information = job.getInformation();
+            for (String beginner : REQUIRE_BEGINNER) {
                 if (information.contains(beginner)) {
                     int startIndex = information.indexOf(beginner) + (beginner).length();
-                    System.out.println("start"+startIndex);
+                    System.out.println("start" + startIndex);
                     //找到下一个：
                     int endIndex = information.indexOf("：", startIndex);
-                    System.out.println("end"+endIndex);
+                    System.out.println("end" + endIndex);
                     require = information.substring(startIndex, endIndex);
                     break;
                 }
@@ -351,6 +359,10 @@ public class JobServiceImpl implements JobService {
             }
         }
 
+        if (num == 0) {
+            return null;
+        }
+
         List<Integer> res = new ArrayList<>();
         res.add((int) (lowSum + highSum) / 2 / num);
         res.add((int) lowest);
@@ -368,21 +380,10 @@ public class JobServiceImpl implements JobService {
      */
     private List<TreatmentDistributionBean> getDistribution(List<Job> jobs, double lowestRaw, double highestRaw) {
         List<TreatmentDistributionBean> distribution = new ArrayList<>();
-
-        // 最低薪资和最高薪资归一化
-        int lowestBitNum = String.valueOf((int) lowestRaw).length();
-        int lowest = (int) ((int) (lowestRaw / Math.pow(10, lowestBitNum - 1)) * Math.pow(10, lowestBitNum - 1));
-
-        int highestBitNum = String.valueOf((int) highestRaw).length();
-        int highest = (int) ((int) (highestRaw / Math.pow(10, highestBitNum - 1) + 1) * Math.pow(10, highestBitNum - 1));
-
         final int LEVEL = 5; // 分成5个级别
-
-        int gap = (highest - lowest) / LEVEL;
-        int[] salaryRange = new int[LEVEL]; // 表驱动
+        int[] salaryRange = {0, 3000, 10000, 20000, 30000}; // 表驱动
         int[] salaryRangeNum = new int[LEVEL];
         for (int i = 0; i < LEVEL; i++) {
-            salaryRange[i] = lowest + gap * i;
             salaryRangeNum[i] = 0;
         }
 
@@ -398,11 +399,11 @@ public class JobServiceImpl implements JobService {
             }
         }
 
-        for (int i = 0; i < LEVEL; i++) {
-            distribution.add(new TreatmentDistributionBean(String.valueOf(lowest + gap * i) +
-                    "-" + String.valueOf(lowest + gap * (i + 1)) + "元", salaryRangeNum[i]));
-        }
-
+        distribution.add(new TreatmentDistributionBean("3000元以下", salaryRangeNum[0]));
+        distribution.add(new TreatmentDistributionBean("3000元-10000元", salaryRangeNum[1]));
+        distribution.add(new TreatmentDistributionBean("10000元-20000元", salaryRangeNum[2]));
+        distribution.add(new TreatmentDistributionBean("20000元-30000元", salaryRangeNum[3]));
+        distribution.add(new TreatmentDistributionBean("30000元以上", salaryRangeNum[4]));
         return distribution;
     }
 
@@ -435,6 +436,12 @@ public class JobServiceImpl implements JobService {
         return HanLP.extractKeyword(information, 3);
     }
 
+    /**
+     * 得到职位类型列表
+     *
+     * @param jobType 职位类型
+     * @return 职位类型列表
+     */
     private List<String> getJobTypeList(String jobType) {
         List<String> jobTypeList = new ArrayList<>();
         Collections.addAll(jobTypeList, jobType.replace(" ", "").split("\\|"));
