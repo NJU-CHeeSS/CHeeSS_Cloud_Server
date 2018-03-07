@@ -33,6 +33,8 @@ public class JobServiceImpl implements JobService {
     @Autowired
     CompanyService companyService;
 
+    private static final String[] REQUIRE_BEGINNER={"任职资格：","任职要求：","岗位要求："};
+
     private JobInfoBean jobToJobInfoBean(Job job) {
         return new JobInfoBean(job.getId(), job.getTitle(), job.getCompany(), job.getJobType(),
                 (int) job.getLowMoney(), (int) job.getHighMoney(), job.getLocation(), String.valueOf(job.getDate()).split("T")[0],
@@ -136,7 +138,7 @@ public class JobServiceImpl implements JobService {
 
         for (String jobType : job.getJobType().split(" ")) {
             for (Job relatedJob : jobDao.getJobByJobType(getJobTypeList(jobType))) {
-                if (!relatedJobs.contains(jobToJobInfoBean(relatedJob)) && relatedJob.getId().equals(jobId)) {
+                if (!relatedJobs.contains(jobToJobInfoBean(relatedJob)) && !relatedJob.getId().equals(jobId)) {
                     relatedJobs.add(jobToJobInfoBean(relatedJob));
                     count++;
                 }
@@ -257,8 +259,24 @@ public class JobServiceImpl implements JobService {
         List<String> keywords = new ArrayList<>();
         List<Integer> keywordsNum = new ArrayList<>();
 
+        String information="";
+        String require="";
+
         for (Job job : jobs) {
-            List<String> jobKeywords = getKeywordsByInformation(job.getInformation());
+            information=job.getInformation();
+            for (String beginner:REQUIRE_BEGINNER) {
+                if (information.contains(beginner)) {
+                    int startIndex = information.indexOf(beginner) + (beginner).length();
+                    System.out.println("start"+startIndex);
+                    //找到下一个：
+                    int endIndex = information.indexOf("：", startIndex);
+                    System.out.println("end"+endIndex);
+                    require = information.substring(startIndex, endIndex);
+                    break;
+                }
+            }
+            System.out.println(require);
+            List<String> jobKeywords = getKeywordsByInformation(require);
             for (String jobKeyword : jobKeywords) {
                 if (!keywords.contains(jobKeyword)) {
                     keywords.add(jobKeyword);
