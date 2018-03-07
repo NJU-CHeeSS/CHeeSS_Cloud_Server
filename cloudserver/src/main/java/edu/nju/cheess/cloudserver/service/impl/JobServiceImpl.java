@@ -224,13 +224,13 @@ public class JobServiceImpl implements JobService {
         List<EducationSalaryBean> educationSalary = new ArrayList<>();
         for (String education : educationList) {
             List<Integer> educationStatisticResult = getStatisticResult(cityJobs, education, "education");
-            sizeSalary.add(new SizeSalaryBean(education, educationStatisticResult.get(0), educationStatisticResult.get(1), educationStatisticResult.get(2)));
+            educationSalary.add(new EducationSalaryBean(education, educationStatisticResult.get(0), educationStatisticResult.get(1), educationStatisticResult.get(2)));
         }
 
         List<ExperienceSalaryBean> experienceSalary = new ArrayList<>();
         for (int experience = 0; experience < maxExperience; experience++) {
             List<Integer> experienceStatisticResult = getStatisticResult(cityJobs, String.valueOf(experience), "experience");
-            sizeSalary.add(new SizeSalaryBean(String.valueOf(experience) + "年", experienceStatisticResult.get(0), experienceStatisticResult.get(1), experienceStatisticResult.get(2)));
+            experienceSalary.add(new ExperienceSalaryBean(String.valueOf(experience) + "年", experienceStatisticResult.get(0), experienceStatisticResult.get(1), experienceStatisticResult.get(2)));
         }
 
         return new TreatmentInfoBean(jobType, city,
