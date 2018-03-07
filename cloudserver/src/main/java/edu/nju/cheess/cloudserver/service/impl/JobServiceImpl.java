@@ -15,10 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -154,71 +151,63 @@ public class JobServiceImpl implements JobService {
     @Override
     public TreatmentInfoBean analyzeTreatment(String jobType, String city) {
         List<Job> countryJobs = jobDao.getJobByJobType(getJobTypeList(jobType));
-        List<Job> cityJobs = jobDao.getJobByJobTypeAndCity(getJobTypeList(jobType), city);
+//        List<Job> cityJobs = jobDao.getJobByJobTypeAndCity(getJobTypeList(jobType), city);
+        List<Job> cityJobs = new ArrayList<>();
 
         /* 全国的职位 */
         double countryLowSum = 0.0, countryHighSum = 0.0;
         double countryLowest = countryJobs.get(0).getLowMoney(), countryHighest = 0.0;
-        List<String> areaList = new ArrayList<>();
+        Set<String> areaSet = new HashSet<>();
 
-        for (Job countryJob : countryJobs) {
-            double countryLow = countryJob.getLowMoney();
-            double countryHigh = countryJob.getHighMoney();
+        /* 该城市的职位 */
+        double cityLowSum = 0.0, cityHighSum = 0.0;
+        double cityLowest = Double.MAX_VALUE, cityHighest = 0.0;
+        Set<String> sizeSet = new HashSet<>();
+        Set<String> educationSet = new HashSet<>();
+        int maxExperience = 0;
 
-            countryLowSum += countryLow;
-            countryHighSum += countryHigh;
-            countryLowest = (countryLowest < countryLow) ? countryLowest : countryLow;
-            countryHighest = (countryHighest > countryHigh) ? countryHighest : countryHigh;
+        for (Job job : countryJobs) {
+            double lowMoney = job.getLowMoney();
+            double highMoney = job.getHighMoney();
 
-            String area = getCity(countryJob);
-            if (!areaList.contains(area)) {
-                areaList.add(area);
+            countryLowSum += lowMoney;
+            countryHighSum += highMoney;
+            countryLowest = (countryLowest < lowMoney) ? countryLowest : lowMoney;
+            countryHighest = (countryHighest > highMoney) ? countryHighest : highMoney;
+            areaSet.add(getCity(job));
+
+            if (getCity(job).equals(city)) {
+                cityJobs.add(job);
+
+                cityLowSum += lowMoney;
+                cityHighSum += highMoney;
+                cityLowest = (cityLowest < lowMoney) ? cityLowest : lowMoney;
+                cityHighest = (cityHighest > highMoney) ? cityHighest : highMoney;
+
+                String size = companyService.getCompanySize(job.getCompany());
+                if (!size.equals("未知")) {
+                    sizeSet.add(size);
+                }
+                educationSet.add(job.getEducation());
+
+                int highExperience = job.getHighExperience();
+                maxExperience = (highExperience > maxExperience) ? highExperience : maxExperience;
             }
         }
+        cityLowest = cityLowest == Double.MAX_VALUE ? 0 : cityLowest;
 
         List<AreaSalaryBean> areaSalary = new ArrayList<>();
-        for (String area : areaList) {
+        for (String area : areaSet) {
             List<Integer> areaStatisticResult = getStatisticResult(countryJobs, area, "area");
             if (areaStatisticResult != null) {
                 areaSalary.add(new AreaSalaryBean(area, areaStatisticResult.get(0), areaStatisticResult.get(1), areaStatisticResult.get(2)));
             }
         }
 
-
-        /* 该城市的职位 */
-        double cityLowSum = 0.0, cityHighSum = 0.0;
-        double cityLowest = cityJobs.get(0).getLowMoney(), cityHighest = 0.0;
-        List<String> sizeList = new ArrayList<>();
-        List<String> educationList = new ArrayList<>();
-        int maxExperience = 0;
-
-        for (Job cityJob : cityJobs) {
-            double cityLow = cityJob.getLowMoney();
-            double cityHigh = cityJob.getHighMoney();
-
-            cityLowSum += cityLow;
-            cityHighSum += cityHigh;
-            cityLowest = (cityLowest < cityLow) ? cityLowest : cityLow;
-            cityHighest = (cityHighest > cityHigh) ? cityHighest : cityHigh;
-
-            String size = companyService.getCompanySize(cityJob.getCompany());
-            if (!size.equals("未知") && !sizeList.contains(size)) {
-                sizeList.add(size);
-            }
-
-            String education = cityJob.getEducation();
-            if (!educationList.contains(education)) {
-                educationList.add(education);
-            }
-
-            int highExperience = cityJob.getHighExperience();
-            maxExperience = (highExperience > maxExperience) ? highExperience : maxExperience;
-        }
-
-        List<TreatmentDistributionBean> distribution = getDistribution(cityJobs, cityLowest, cityHighest);
+        List<TreatmentDistributionBean> distribution = getDistribution(cityJobs);
 
         List<SizeSalaryBean> sizeSalary = new ArrayList<>();
-        for (String size : sizeList) {
+        for (String size : sizeSet) {
             List<Integer> sizeStatisticResult = getStatisticResult(cityJobs, size, "size");
             if (sizeStatisticResult != null) {
                 sizeSalary.add(new SizeSalaryBean(size, sizeStatisticResult.get(0), sizeStatisticResult.get(1), sizeStatisticResult.get(2)));
@@ -226,7 +215,7 @@ public class JobServiceImpl implements JobService {
         }
 
         List<EducationSalaryBean> educationSalary = new ArrayList<>();
-        for (String education : educationList) {
+        for (String education : educationSet) {
             List<Integer> educationStatisticResult = getStatisticResult(cityJobs, education, "education");
             if (educationStatisticResult != null) {
                 educationSalary.add(new EducationSalaryBean(education, educationStatisticResult.get(0), educationStatisticResult.get(1), educationStatisticResult.get(2)));
@@ -371,33 +360,29 @@ public class JobServiceImpl implements JobService {
     /**
      * 获得薪资分布结果
      *
-     * @param lowestRaw  最低薪资
-     * @param highestRaw 最高薪资
      * @return 薪资分布结果
      */
-    private List<TreatmentDistributionBean> getDistribution(List<Job> jobs, double lowestRaw, double highestRaw) {
+    private List<TreatmentDistributionBean> getDistribution(List<Job> jobs) {
         List<TreatmentDistributionBean> distribution = new ArrayList<>();
         final int LEVEL = 5; // 分成5个级别
         int[] salaryRange = {0, 5000, 10000, 20000, 30000}; // 表驱动
         int[] salaryRangeNum = new int[LEVEL];
-        for (int i = 0; i < LEVEL; i++) {
-            salaryRangeNum[i] = 0;
-        }
 
         for (Job job : jobs) {
+            if (job.getLowMoney() >= salaryRange[LEVEL - 1]) {
+                salaryRangeNum[LEVEL - 1]++;
+                continue;
+            }
             for (int i = 0; i < LEVEL - 1; i++) {
                 if (job.getLowMoney() >= salaryRange[i] && job.getLowMoney() < salaryRange[i + 1]) {
                     salaryRangeNum[i]++;
+                    break;
                 }
-            }
-
-            if (job.getLowMoney() >= salaryRange[LEVEL - 1]) {
-                salaryRangeNum[LEVEL - 1]++;
             }
         }
 
-        distribution.add(new TreatmentDistributionBean("3000元以下", salaryRangeNum[0]));
-        distribution.add(new TreatmentDistributionBean("3000元-10000元", salaryRangeNum[1]));
+        distribution.add(new TreatmentDistributionBean("5000元以下", salaryRangeNum[0]));
+        distribution.add(new TreatmentDistributionBean("5000元-10000元", salaryRangeNum[1]));
         distribution.add(new TreatmentDistributionBean("10000元-20000元", salaryRangeNum[2]));
         distribution.add(new TreatmentDistributionBean("20000元-30000元", salaryRangeNum[3]));
         distribution.add(new TreatmentDistributionBean("30000元以上", salaryRangeNum[4]));
@@ -411,15 +396,7 @@ public class JobServiceImpl implements JobService {
      * @return 城市名字
      */
     private String getCity(Job job) {
-        String location = job.getLocation();
-        String area;
-        if (location.contains("-")) {
-            area = location.split("-")[0];
-        } else {
-            area = location;
-        }
-
-        return area;
+        return job.getLocation().split("-")[0];
     }
 
     /**
