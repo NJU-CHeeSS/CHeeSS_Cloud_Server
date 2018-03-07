@@ -16,7 +16,12 @@ public class JobServiceTest {
     JobService jobService;
 
     @Test
-    public void test(){
+    public void skillTest(){
         System.out.print(jobService.analyseSkills("物流").getKeywords().size());
+    }
+
+    @Test
+    public void treatmentTest(){
+        jobService.analyzeTreatment("物流","上海");
     }
 }

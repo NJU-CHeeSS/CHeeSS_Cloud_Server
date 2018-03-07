@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class CompanyServiceImpl implements CompanyService {
 
     private static final int RANK_NUM = 15;
+    private static final int RELATE_NUM=15;
 
     @Autowired
     private CompanyDao companyDao;
@@ -97,8 +98,25 @@ public class CompanyServiceImpl implements CompanyService {
         List<Company> typeCompanies = companyDao.getCompanyByType(type);
         String[] industries = industry.split("/");
         List<Company> temp = typeCompanies;
+        List<Company> industryCompany=null;
         for (String industry1 : industries) {
-            temp.addAll(companyDao.getCompanyByIndustry(industry1));
+            if (temp.size()>RELATE_NUM){
+                break;
+            }
+            industryCompany=companyDao.getCompanyByIndustry(industry1);
+            for(int i=0;i<industryCompany.size();i++){
+                //排除自己
+                if (industryCompany.get(i).getId().equals(companyId)){
+                    continue;
+                }
+                //排除相同的
+                if (temp.contains(industryCompany.get(i))){
+                    continue;
+                }
+                if (temp.size()>RELATE_NUM){
+                    break;
+                }
+            }
         }
         result.addAll(temp.stream().map(c -> new CompanyMiniBean(c.getId(), c.getName(), c.getIndustry(), getKeywordsByIntroduction(c.getIntroduction()))).collect(Collectors.toList()));
         return result;
