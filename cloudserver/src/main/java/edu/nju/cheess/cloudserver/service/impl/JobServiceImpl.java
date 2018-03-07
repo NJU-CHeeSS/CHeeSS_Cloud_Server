@@ -275,15 +275,12 @@ public class JobServiceImpl implements JobService {
             for (String beginner : REQUIRE_BEGINNER) {
                 if (information.contains(beginner)) {
                     int startIndex = information.indexOf(beginner) + (beginner).length();
-                    System.out.println("start" + startIndex);
                     //找到下一个：
                     int endIndex = information.indexOf("：", startIndex);
-                    System.out.println("end" + endIndex);
                     require = information.substring(startIndex, endIndex);
                     break;
                 }
             }
-            System.out.println(require);
             List<String> jobKeywords = getKeywordsByInformation(require);
             for (String jobKeyword : jobKeywords) {
                 if (!keywords.contains(jobKeyword)) {
@@ -381,7 +378,7 @@ public class JobServiceImpl implements JobService {
     private List<TreatmentDistributionBean> getDistribution(List<Job> jobs, double lowestRaw, double highestRaw) {
         List<TreatmentDistributionBean> distribution = new ArrayList<>();
         final int LEVEL = 5; // 分成5个级别
-        int[] salaryRange = {0, 3000, 10000, 20000, 30000}; // 表驱动
+        int[] salaryRange = {0, 5000, 10000, 20000, 30000}; // 表驱动
         int[] salaryRangeNum = new int[LEVEL];
         for (int i = 0; i < LEVEL; i++) {
             salaryRangeNum[i] = 0;

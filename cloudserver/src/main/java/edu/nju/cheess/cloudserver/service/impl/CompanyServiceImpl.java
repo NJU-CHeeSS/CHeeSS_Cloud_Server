@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
-    private static final int RANK_NUM=15;
+    private static final int RANK_NUM = 15;
 
     @Autowired
     private CompanyDao companyDao;
@@ -90,13 +90,13 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public List<CompanyMiniBean> getRelatedCompanies(Long companyId) {
         Company company = companyDao.getCompanyById(companyId);
-        String type=company.getType();
-        String industry=company.getIndustry();
-        List<CompanyMiniBean> result=new ArrayList<>();
+        String type = company.getType();
+        String industry = company.getIndustry();
+        List<CompanyMiniBean> result = new ArrayList<>();
         //获得某一类别的公司
-        List<Company> typeCompanies=companyDao.getCompanyByType(type);
-        String[] industries=industry.split("/");
-        List<Company> temp=typeCompanies;
+        List<Company> typeCompanies = companyDao.getCompanyByType(type);
+        String[] industries = industry.split("/");
+        List<Company> temp = typeCompanies;
         for (String industry1 : industries) {
             temp.addAll(companyDao.getCompanyByIndustry(industry1));
         }
@@ -106,27 +106,27 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<CompanyMiniBean> getCompaniesRank(String industry) {
-        String[] industries=industry.trim().split("/");
-        Map<Integer,Integer> sizes=new HashMap<>();
+        String[] industries = industry.trim().split("/");
+        Map<Integer, Integer> sizes = new HashMap<>();
         //获得某一行业的公司
-        List<Company> companies=companyDao.getCompanyByIndustry(industries[0]);
-        for (int i=0;i<companies.size();i++) {
-            sizes.put(i,getSizeNumber(companies.get(i).getSize()));
+        List<Company> companies = companyDao.getCompanyByIndustry(industries[0]);
+        for (int i = 0; i < companies.size(); i++) {
+            sizes.put(i, getSizeNumber(companies.get(i).getSize()));
         }
-        List<Map.Entry<Integer,Integer>> list = new ArrayList<Map.Entry<Integer,Integer>>(sizes.entrySet());
-        Collections.sort(list,new Comparator<Map.Entry<Integer,Integer>>() {
+        List<Map.Entry<Integer, Integer>> list = new ArrayList<Map.Entry<Integer, Integer>>(sizes.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<Integer, Integer>>() {
             //降序排序
-            public int compare(Map.Entry<Integer,Integer> o1,
-                               Map.Entry<Integer,Integer> o2) {
+            public int compare(Map.Entry<Integer, Integer> o1,
+                               Map.Entry<Integer, Integer> o2) {
                 return o2.getValue().compareTo(o1.getValue());
             }
 
         });
-        List<CompanyMiniBean> result=new ArrayList<>();
-        Company temp=null;
-        for(Map.Entry<Integer,Integer> mapping:list){
-            temp=companies.get(mapping.getKey());
-            if (temp!=null&&result.size()<RANK_NUM) {
+        List<CompanyMiniBean> result = new ArrayList<>();
+        Company temp = null;
+        for (Map.Entry<Integer, Integer> mapping : list) {
+            temp = companies.get(mapping.getKey());
+            if (temp != null && result.size() < RANK_NUM) {
                 result.add(new CompanyMiniBean(temp.getId(), temp.getName(), temp.getIndustry(), getKeywordsByIntroduction(temp.getIntroduction())));
             }
         }
@@ -154,6 +154,8 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public String getCompanySize(String name) {
+        System.out.println(name);
+
         String rawSize = companyDao.getCompanyByName(name).getSize();
         String regex = "[0-9]+人";
         Pattern pattern = Pattern.compile(regex);
@@ -182,10 +184,11 @@ public class CompanyServiceImpl implements CompanyService {
 
     /**
      * 获得企业规模数字
+     *
      * @param size
      * @return
      */
-    private int getSizeNumber(String size){
+    private int getSizeNumber(String size) {
         String regex = "[0-9]+人";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(size);
