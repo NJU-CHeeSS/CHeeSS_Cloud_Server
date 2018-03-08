@@ -7,10 +7,7 @@ import edu.nju.cheess.cloudserver.bean.UserPasswordBean;
 import edu.nju.cheess.cloudserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/api/users")
@@ -121,8 +118,9 @@ public class UserController {
     @ResponseBody
     @RequestMapping(
             value = "/follow",
+            params = {"companyId"},
             method = RequestMethod.GET)
-    public ResultMessageBean follow(Long companyId) {
+    public ResultMessageBean follow(@RequestParam(value = "companyId") Long companyId) {
 
         return userService.follow(getUserInfo().getUserId(), companyId);
     }
@@ -136,8 +134,9 @@ public class UserController {
     @ResponseBody
     @RequestMapping(
             value = "/unfollow",
+            params = {"companyId"},
             method = RequestMethod.GET)
-    public ResultMessageBean cancelFollow(Long companyId) {
+    public ResultMessageBean cancelFollow(@RequestParam(value = "companyId") Long companyId) {
 
         return userService.cancelFollow(getUserInfo().getUserId(), companyId);
     }
@@ -151,8 +150,9 @@ public class UserController {
     @ResponseBody
     @RequestMapping(
             value = "/checkFollow",
+            params = {"companyId"},
             method = RequestMethod.GET)
-    public boolean checkFollow(Long companyId) {
+    public boolean checkFollow(@RequestParam(value = "companyId") Long companyId) {
 
         return userService.checkFollow(getUserInfo().getUserId(), companyId);
     }

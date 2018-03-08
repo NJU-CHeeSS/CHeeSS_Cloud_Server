@@ -66,7 +66,8 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Page<JobInfoBean> getJobByCondition(String order, int size, int page, ConditionBean conditionBean) {
+    public Page<JobInfoBean> getJobByCondition(String order, int size, int page,
+                                               String location, String diploma, String earlyReleaseDate, String property) {
         Page<JobInfoBean> res = new Page<>();
         res.setOrder(order);
         res.setSize(size);
@@ -79,7 +80,7 @@ public class JobServiceImpl implements JobService {
 
         for (Job job : jobList) {
             LocalDateTime time = LocalDateTime.now();
-            switch (conditionBean.getEarlyReleaseDate()) {
+            switch (earlyReleaseDate) {
                 case "近24小时":
                     time = time.minusDays(1);
                     break;
@@ -90,10 +91,10 @@ public class JobServiceImpl implements JobService {
                     time = time.minusMonths(1);
                     break;
             }
-            if (!conditionBean.getLocation().equals("不限") && conditionBean.getLocation().equals(job.getLocation()) &&
-                    !conditionBean.getEarlyReleaseDate().equals("不限") && time.isBefore(job.getDate()) &&
-                    !conditionBean.getDiploma().equals("不限") && conditionBean.getDiploma().equals(job.getEducation()) &&
-                    !conditionBean.getProperty().equals("不限") && jobDao.getJobByJobType(getJobTypeList(conditionBean.getProperty())).contains(job)) {
+            if (!location.equals("不限") && location.equals(job.getLocation()) &&
+                    !earlyReleaseDate.equals("不限") && time.isBefore(job.getDate()) &&
+                    !diploma.equals("不限") && diploma.equals(job.getEducation()) &&
+                    !property.equals("不限") && jobDao.getJobByJobType(getJobTypeList(property)).contains(job)) {
 
                 beans.add(jobToJobInfoBean(job));
             }

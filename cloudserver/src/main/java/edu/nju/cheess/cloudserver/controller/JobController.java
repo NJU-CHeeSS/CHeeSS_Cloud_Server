@@ -58,11 +58,14 @@ public class JobController {
     /**
      * 根据条件搜索职位列表
      *
-     * @param order         按什么排序
-     * @param size          每页大小
-     * @param page          第几页
-     * @param conditionBean 搜索条件
-     * @return 分页列表
+     * @param order            按什么排序
+     * @param size             每页大小
+     * @param page             第几页
+     * @param location         地点
+     * @param diploma          学历
+     * @param earlyReleaseDate 发布时间
+     * @param property         职位性质
+     * @return 职位列表
      */
     @ResponseBody
     @RequestMapping(
@@ -73,9 +76,12 @@ public class JobController {
     public Page<JobInfoBean> getJobByCondition(@RequestParam(value = "order") String order,
                                                @RequestParam(value = "size") int size,
                                                @RequestParam(value = "page") int page,
-                                               @RequestParam(value = "conditionBean") ConditionBean conditionBean) {
+                                               @RequestParam(value = "location") String location,
+                                               @RequestParam(value = "diploma") String diploma,
+                                               @RequestParam(value = "earlyReleaseDate") String earlyReleaseDate,
+                                               @RequestParam(value = "property") String property) {
 
-        return jobService.getJobByCondition(order, size, page, conditionBean);
+        return jobService.getJobByCondition(order, size, page, location, diploma, earlyReleaseDate, property);
     }
 
     /**
