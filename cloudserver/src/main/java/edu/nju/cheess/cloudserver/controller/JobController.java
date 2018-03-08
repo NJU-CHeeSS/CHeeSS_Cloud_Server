@@ -187,4 +187,20 @@ public class JobController {
 
         return jobService.analyseSkills(jobType);
     }
+
+    /**
+     * 查看职位申请人数
+     *
+     * @param jobId 职位id
+     * @return (true, 申请人数)
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/jobs/apply",
+            params = {"jobId"},
+            method = RequestMethod.GET)
+    public ResultMessageBean getApplyNum(@RequestParam(value = "jobId") Long jobId) {
+
+        return jobService.countApply(jobId);
+    }
 }

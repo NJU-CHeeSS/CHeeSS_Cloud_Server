@@ -125,13 +125,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultMessageBean apply(Long userId, Long jobId) {
         if (applyJobRepository.findByUserIdAndJobId(userId, jobId) != null) {
-            return new ResultMessageBean(false, "已关注该企业");
+            return new ResultMessageBean(false, "已申请该职位");
         }
         ApplyJob applyJob = new ApplyJob();
         applyJob.setUserId(userId);
         applyJob.setJobId(jobId);
         applyJobRepository.save(applyJob);
         return new ResultMessageBean(true);
+    }
+
+    @Override
+    public boolean checkApply(Long userId, Long jobId) {
+        return applyJobRepository.findByUserIdAndJobId(userId, jobId) != null;
     }
 
 }

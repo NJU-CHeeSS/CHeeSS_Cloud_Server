@@ -92,10 +92,19 @@ public interface UserService {
     /**
      * 申请岗位
      *
-     * @param userId    用户id
-     * @param jobId     职位id
-     * @return          申请结果
+     * @param userId 用户id
+     * @param jobId  职位id
+     * @return 申请结果
      */
     ResultMessageBean apply(Long userId, Long jobId);
+
+    /**
+     * 获得是否申请岗位
+     *
+     * @param userId 用户
+     * @param jobId  职位id
+     * @return 是否申请岗位
+     */
+    boolean checkApply(Long userId, Long jobId);
 
 }

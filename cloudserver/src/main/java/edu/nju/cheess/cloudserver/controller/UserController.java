@@ -1,13 +1,13 @@
 package edu.nju.cheess.cloudserver.controller;
 
-import edu.nju.cheess.cloudserver.bean.PasswordBean;
-import edu.nju.cheess.cloudserver.bean.ResultMessageBean;
-import edu.nju.cheess.cloudserver.bean.UserInfoBean;
-import edu.nju.cheess.cloudserver.bean.UserPasswordBean;
+import edu.nju.cheess.cloudserver.bean.*;
+import edu.nju.cheess.cloudserver.service.CompanyService;
 import edu.nju.cheess.cloudserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/users")
@@ -15,6 +15,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CompanyService companyService;
 
     /**
      * 注册
@@ -156,4 +159,51 @@ public class UserController {
 
         return userService.checkFollow(getUserInfo().getUserId(), companyId);
     }
+
+    /**
+     * 获取用户关注企业
+     *
+     * @return 企业列表
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/companies",
+            method = RequestMethod.GET)
+    public List<CompanyInfoBean> getFollowCompanies() {
+
+        return companyService.getFollowCompanies(getUserInfo().getUserId());
+    }
+
+    /**
+     * 申请职位
+     *
+     * @param jobId 职位id
+     * @return 关注结果
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/apply",
+            params = {"jobId"},
+            method = RequestMethod.GET)
+    public ResultMessageBean apply(@RequestParam(value = "jobId") Long jobId) {
+
+        return userService.apply(getUserInfo().getUserId(), jobId);
+    }
+
+    /**
+     * 获得是否申请职位
+     *
+     * @param jobId 职位id
+     * @return 是否关注企业
+     */
+    @ResponseBody
+    @RequestMapping(
+            value = "/checkFollow",
+            params = {"companyId"},
+            method = RequestMethod.GET)
+    public boolean checkApply(@RequestParam(value = "jobId") Long jobId) {
+
+        return userService.checkApply(getUserInfo().getUserId(), jobId);
+    }
+
 }
