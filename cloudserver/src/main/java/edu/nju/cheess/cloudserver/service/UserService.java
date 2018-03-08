@@ -88,4 +88,14 @@ public interface UserService {
      * @return 是否关注企业
      */
     boolean checkFollow(Long userId, Long companyId);
+
+    /**
+     * 申请岗位
+     *
+     * @param userId    用户id
+     * @param jobId     职位id
+     * @return          申请结果
+     */
+    ResultMessageBean apply(Long userId, Long jobId);
+
 }

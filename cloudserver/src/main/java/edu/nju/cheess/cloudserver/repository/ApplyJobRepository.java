@@ -7,8 +7,10 @@ import java.util.List;
 
 public interface ApplyJobRepository extends JpaRepository<ApplyJob, Long> {
 
+    ApplyJob findByUserIdAndJobId(Long userId, Long JobId);
+
     List<ApplyJob> findByUserId(Long userId);
 
-    int countByJobId(Integer jobId);
+    int countByJobId(Long jobId);
 
 }

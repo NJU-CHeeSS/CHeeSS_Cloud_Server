@@ -5,7 +5,9 @@ import edu.nju.cheess.cloudserver.bean.ResultMessageBean;
 import edu.nju.cheess.cloudserver.bean.UserInfoBean;
 import edu.nju.cheess.cloudserver.bean.UserPasswordBean;
 import edu.nju.cheess.cloudserver.dao.UserDao;
+import edu.nju.cheess.cloudserver.entity.ApplyJob;
 import edu.nju.cheess.cloudserver.entity.User;
+import edu.nju.cheess.cloudserver.repository.ApplyJobRepository;
 import edu.nju.cheess.cloudserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -17,6 +19,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private ApplyJobRepository applyJobRepository;
 
     @Override
     public ResultMessageBean signIn(String username, String password) {
@@ -116,4 +121,17 @@ public class UserServiceImpl implements UserService {
     public boolean checkFollow(Long userId, Long companyId) {
         return userDao.isFollowCompany(userId, companyId);
     }
+
+    @Override
+    public ResultMessageBean apply(Long userId, Long jobId) {
+        if (applyJobRepository.findByUserIdAndJobId(userId, jobId) != null) {
+            return new ResultMessageBean(false, "已关注该企业");
+        }
+        ApplyJob applyJob = new ApplyJob();
+        applyJob.setUserId(userId);
+        applyJob.setJobId(jobId);
+        applyJobRepository.save(applyJob);
+        return new ResultMessageBean(true);
+    }
+
 }

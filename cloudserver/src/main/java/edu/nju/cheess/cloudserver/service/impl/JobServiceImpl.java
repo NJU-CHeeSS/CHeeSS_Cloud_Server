@@ -5,6 +5,7 @@ import edu.nju.cheess.cloudserver.bean.*;
 import edu.nju.cheess.cloudserver.dao.JobDao;
 import edu.nju.cheess.cloudserver.entity.Job;
 import edu.nju.cheess.cloudserver.entity.User;
+import edu.nju.cheess.cloudserver.repository.ApplyJobRepository;
 import edu.nju.cheess.cloudserver.repository.UserRepository;
 import edu.nju.cheess.cloudserver.service.CompanyService;
 import edu.nju.cheess.cloudserver.service.JobService;
@@ -29,6 +30,9 @@ public class JobServiceImpl implements JobService {
 
     @Autowired
     CompanyService companyService;
+
+    @Autowired
+    ApplyJobRepository applyJobRepository;
 
     private static final String[] REQUIRE_BEGINNER = {"任职资格：", "任职要求：", "岗位要求："};
 
@@ -422,5 +426,10 @@ public class JobServiceImpl implements JobService {
         Collections.addAll(jobTypeList, jobType.replace(" ", "").split("\\|"));
 
         return jobTypeList;
+    }
+
+    @Override
+    public ResultMessageBean countApply(Long jobId) {
+        return new ResultMessageBean(true, String.valueOf(applyJobRepository.countByJobId(jobId)));
     }
 }

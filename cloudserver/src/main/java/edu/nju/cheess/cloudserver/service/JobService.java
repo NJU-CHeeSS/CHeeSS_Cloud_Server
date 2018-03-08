@@ -84,4 +84,13 @@ public interface JobService {
      * @return 职位技能需求信息
      */
     SkillInfoBean analyseSkills(String jobType);
+
+    /**
+     * 获取职位申请人数
+     *
+     * @param jobId     职位id
+     * @return          结果
+     */
+    ResultMessageBean countApply(Long jobId);
+
 }

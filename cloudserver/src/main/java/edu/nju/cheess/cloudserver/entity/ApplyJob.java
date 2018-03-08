@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class ApplyJob {
     private Long id;
     private Long userId;
-    private Integer jobId;
+    private Long jobId;
 
     public ApplyJob() {}
 
@@ -31,11 +31,11 @@ public class ApplyJob {
     }
 
     @Column(name = "job_id", nullable = false)
-    public Integer getJobId() {
+    public Long getJobId() {
         return jobId;
     }
 
-    public void setJobId(Integer jobId) {
+    public void setJobId(Long jobId) {
         this.jobId = jobId;
     }
 }
