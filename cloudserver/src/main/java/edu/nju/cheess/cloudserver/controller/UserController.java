@@ -198,7 +198,7 @@ public class UserController {
      */
     @ResponseBody
     @RequestMapping(
-            value = "/checkFollow",
+            value = "/checkApply",
             params = {"companyId"},
             method = RequestMethod.GET)
     public boolean checkApply(@RequestParam(value = "jobId") Long jobId) {
