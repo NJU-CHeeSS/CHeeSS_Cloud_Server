@@ -151,7 +151,6 @@ public class JobServiceImpl implements JobService {
     @Override
     public TreatmentInfoBean analyzeTreatment(String jobType, String city) {
         List<Job> countryJobs = jobDao.getJobByJobType(getJobTypeList(jobType));
-//        List<Job> cityJobs = jobDao.getJobByJobTypeAndCity(getJobTypeList(jobType), city);
         List<Job> cityJobs = new ArrayList<>();
 
         /* 全国的职位 */
@@ -162,7 +161,12 @@ public class JobServiceImpl implements JobService {
         /* 该城市的职位 */
         double cityLowSum = 0.0, cityHighSum = 0.0;
         double cityLowest = Double.MAX_VALUE, cityHighest = 0.0;
-        Set<String> sizeSet = new HashSet<>();
+        Set<String> sizeSet = new HashSet<String>() {{
+            add("大型企业");
+            add("中型企业");
+            add("小型企业");
+        }};
+
         Set<String> educationSet = new HashSet<>();
         int maxExperience = 0;
 
@@ -184,10 +188,6 @@ public class JobServiceImpl implements JobService {
                 cityLowest = (cityLowest < lowMoney) ? cityLowest : lowMoney;
                 cityHighest = (cityHighest > highMoney) ? cityHighest : highMoney;
 
-                String size = companyService.getCompanySize(job.getCompany());
-                if (!size.equals("未知")) {
-                    sizeSet.add(size);
-                }
                 educationSet.add(job.getEducation());
 
                 int highExperience = job.getHighExperience();
@@ -282,7 +282,7 @@ public class JobServiceImpl implements JobService {
             }
         }
         List<SkillKeywordsBean> skillKeywords = new ArrayList<>();
-        for (int i = 0; i < keywords.size(); i++) {
+        for (int i = 0; i < keywords.size() && i < 10; i++) {
             skillKeywords.add(new SkillKeywordsBean(keywords.get(i), keywordsNum.get(i)));
         }
 
@@ -298,7 +298,7 @@ public class JobServiceImpl implements JobService {
      */
     private List<Integer> getStatisticResult(List<Job> jobs, String string, String type) {
         double lowSum = 0.0, highSum = 0.0;
-        double lowest = jobs.get(0).getLowMoney(), highest = 0.0;
+        double lowest = Integer.MAX_VALUE, highest = 0.0;
         int num = 0;
 
         boolean isSatisfied = false;
@@ -365,7 +365,7 @@ public class JobServiceImpl implements JobService {
     private List<TreatmentDistributionBean> getDistribution(List<Job> jobs) {
         List<TreatmentDistributionBean> distribution = new ArrayList<>();
         final int LEVEL = 5; // 分成5个级别
-        int[] salaryRange = {0, 5000, 10000, 20000, 30000}; // 表驱动
+        int[] salaryRange = {0, 4000, 10000, 20000, 30000}; // 表驱动
         int[] salaryRangeNum = new int[LEVEL];
 
         for (Job job : jobs) {
@@ -381,8 +381,8 @@ public class JobServiceImpl implements JobService {
             }
         }
 
-        distribution.add(new TreatmentDistributionBean("5000元以下", salaryRangeNum[0]));
-        distribution.add(new TreatmentDistributionBean("5000元-10000元", salaryRangeNum[1]));
+        distribution.add(new TreatmentDistributionBean("4000元以下", salaryRangeNum[0]));
+        distribution.add(new TreatmentDistributionBean("4000元-10000元", salaryRangeNum[1]));
         distribution.add(new TreatmentDistributionBean("10000元-20000元", salaryRangeNum[2]));
         distribution.add(new TreatmentDistributionBean("20000元-30000元", salaryRangeNum[3]));
         distribution.add(new TreatmentDistributionBean("30000元以上", salaryRangeNum[4]));
