@@ -20,8 +20,8 @@ public class JobServiceTest {
         System.out.print(jobService.analyseSkills("物流").getKeywords().size());
     }
 
-    @Test
-    public void treatmentTest(){
-        jobService.analyzeTreatment("物流","上海");
-    }
+//    @Test
+//    public void treatmentTest(){
+//        jobService.analyzeTreatment("物流","上海");
+//    }
 }

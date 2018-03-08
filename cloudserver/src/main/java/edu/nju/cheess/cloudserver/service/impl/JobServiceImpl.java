@@ -112,7 +112,7 @@ public class JobServiceImpl implements JobService {
         res.setPage(page);
 
         User user = userRepository.findOne(userId);
-        List<String> skills = Arrays.asList(user.getSkill().split(" "));
+        List<String> skills = Arrays.asList(user.getSkill().trim().split("[，,]"));
 
         List<Job> jobs = jobDao.getRecommendJobs(user.getCity(), user.getDiploma(), skills);
 

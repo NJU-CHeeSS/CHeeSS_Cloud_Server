@@ -68,4 +68,12 @@ public interface CompanyDao {
      * @return
      */
     List<Company> getCompanyByIndustry(String industry);
+
+    /**
+     * 获得用户关注的公司列表
+     *
+     * @param id        用户id
+     * @return          公司列表
+     */
+    List<Company> getCompanyByUser(Long id);
 }

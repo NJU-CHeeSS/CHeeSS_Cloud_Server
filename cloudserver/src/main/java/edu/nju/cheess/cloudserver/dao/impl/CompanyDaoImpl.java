@@ -141,4 +141,15 @@ public class CompanyDaoImpl implements CompanyDao {
         return dataList.stream().map(this::convertMapToCompanyEntity).collect(Collectors.toList());
     }
 
+    @Override
+    public List<Company> getCompanyByUser(Long userId) {
+        // 获取用户关注企业id列表
+        List<Integer> companyIds = followCompanyRepository.findCompanyIDs(userId);
+
+        return companyIds.stream()
+                .map(id -> convertMapToCompanyEntity(hBaseHelper.getData(TABLE_NAME, String.valueOf(id))))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
 }
