@@ -28,20 +28,34 @@ public class CompanyServiceImpl implements CompanyService {
     @Autowired
     private CompanyDao companyDao;
 
-    @Override
-    public CompanyInfoBean getCompanyById(Long companyId) {
-        Company company = companyDao.getCompanyById(companyId);
+    private CompanyInfoBean convertEntityToCompanyInfoBean(Company company) {
+        if (company == null) {
+            return null;
+        }
         List<String> keywords = getKeywordsByIntroduction(company.getIntroduction());
         return new CompanyInfoBean(company.getId(), company.getName(), company.getType(),
                 company.getIndustry(), company.getSize(), company.getIntroduction(), keywords);
     }
 
     @Override
+    public CompanyInfoBean getCompanyById(Long companyId) {
+        Company company = companyDao.getCompanyById(companyId);
+        return convertEntityToCompanyInfoBean(company);
+    }
+
+    @Override
     public CompanyInfoBean getCompanyByName(String name) {
         Company company = companyDao.getCompanyByName(name);
+        return convertEntityToCompanyInfoBean(company);
+    }
+
+    private CompanyMiniBean convertEntityToCompanyMiniBean(Company company) {
+        if (company == null) {
+            return null;
+        }
+
         List<String> keywords = getKeywordsByIntroduction(company.getIntroduction());
-        return new CompanyInfoBean(company.getId(), company.getName(), company.getType(),
-                company.getIndustry(), company.getSize(), company.getIntroduction(), keywords);
+        return new CompanyMiniBean(company.getId(), company.getName(), company.getIndustry(), keywords);
     }
 
     @Override
@@ -54,12 +68,7 @@ public class CompanyServiceImpl implements CompanyService {
         List<Company> companyList = companyDao.getCompanyByCondition(keyword,
                 new PageRequest(page - 1, size));
 
-        List<CompanyMiniBean> miniBeans = new ArrayList<>();
-        for (Company company : companyList) {
-            List<String> keywords = getKeywordsByIntroduction(company.getIntroduction());
-            miniBeans.add(new CompanyMiniBean(company.getId(), company.getName(), company.getIndustry(), keywords));
-        }
-        res.setResult(miniBeans);
+        res.setResult(companyList.stream().map(this::convertEntityToCompanyMiniBean).collect(Collectors.toList()));
         res.setTotalCount(companyList.size());
         return res;
     }
@@ -79,49 +88,47 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<CompanyMiniBean> getPopularCompanies() {
-        List<CompanyMiniBean> companyMiniBeans = new ArrayList<>();
         List<Company> companies = companyDao.getPopularCompanies();
-        for (Company company : companies) {
-            List<String> keywords = getKeywordsByIntroduction(company.getIntroduction());
-            companyMiniBeans.add(new CompanyMiniBean(company.getId(), company.getName(), company.getIndustry(), keywords));
-        }
-        return companyMiniBeans;
+
+        return companies
+                .stream()
+                .map(this::convertEntityToCompanyMiniBean)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<CompanyMiniBean> getRelatedCompanies(Long companyId) {
         Company company = companyDao.getCompanyById(companyId);
-        String type = company.getType();
+//        String type = company.getType();
         String industry = company.getIndustry();
-        List<CompanyMiniBean> result = new ArrayList<>();
+
         //获得某一类别的公司
 //        List<Company> typeCompanies = companyDao.getCompanyByType(type);
         String[] industries = industry.split("/");
         List<Company> temp = new ArrayList<>();
-        List<Company> industryCompany=null;
+        List<Company> industryCompany;
         for (String industry1 : industries) {
-            if (temp.size()>RELATE_NUM){
+            if (temp.size() > RELATE_NUM) {
                 break;
             }
             industryCompany=companyDao.getCompanyByIndustry(industry1);
-            for(int i=0;i<industryCompany.size();i++){
+            for (int i = 0; i < industryCompany.size(); i++) {
                 //排除自己
-                if (industryCompany.get(i).getId().equals(companyId)){
+                if (industryCompany.get(i).getId().equals(companyId)) {
                     continue;
                 }
                 //排除相同的
-                if (temp.contains(industryCompany.get(i))){
+                if (temp.contains(industryCompany.get(i))) {
                     continue;
                 }
-                if (temp.size()>RELATE_NUM){
+                if (temp.size()>RELATE_NUM) {
                     break;
                 }
                 temp.add(industryCompany.get(i));
             }
         }
-        result.addAll(temp.stream().map(c -> new CompanyMiniBean(c.getId(), c.getName(), c.getIndustry(), getKeywordsByIntroduction(c.getIntroduction()))).collect(Collectors.toList()));
+        return temp.stream().map(this::convertEntityToCompanyMiniBean).collect(Collectors.toList());
 //         System.out.println(result.size());
-        return result;
     }
 
     @Override
@@ -133,21 +140,15 @@ public class CompanyServiceImpl implements CompanyService {
         for (int i = 0; i < companies.size(); i++) {
             sizes.put(i, getSizeNumber(companies.get(i).getSize()));
         }
-        List<Map.Entry<Integer, Integer>> list = new ArrayList<Map.Entry<Integer, Integer>>(sizes.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<Integer, Integer>>() {
-            //降序排序
-            public int compare(Map.Entry<Integer, Integer> o1,
-                               Map.Entry<Integer, Integer> o2) {
-                return o2.getValue().compareTo(o1.getValue());
-            }
-
-        });
+        List<Map.Entry<Integer, Integer>> list = new ArrayList<>(sizes.entrySet());
+        //降序排序
+        list.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
         List<CompanyMiniBean> result = new ArrayList<>();
-        Company temp = null;
+
         for (Map.Entry<Integer, Integer> mapping : list) {
-            temp = companies.get(mapping.getKey());
+            Company temp = companies.get(mapping.getKey());
             if (temp != null && result.size() < RANK_NUM) {
-                result.add(new CompanyMiniBean(temp.getId(), temp.getName(), temp.getIndustry(), getKeywordsByIntroduction(temp.getIntroduction())));
+                result.add(convertEntityToCompanyMiniBean(temp));
             }
         }
         return result;
@@ -238,6 +239,12 @@ public class CompanyServiceImpl implements CompanyService {
         //调用HanLP TextRank算法
         List<String> keywordList = HanLP.extractKeyword(introduction, 3);
         return keywordList;
+    }
+
+    @Override
+    public List<CompanyInfoBean> getFollowCompanies(Long userId) {
+        List<Company> companies = companyDao.getCompanyByUser(userId);
+        return companies.stream().map(this::convertEntityToCompanyInfoBean).collect(Collectors.toList());
     }
 
 }

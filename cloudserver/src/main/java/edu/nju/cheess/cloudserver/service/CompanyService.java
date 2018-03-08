@@ -88,4 +88,11 @@ public interface CompanyService {
      * @return 企业规模
      */
     String getCompanySize(String name);
+
+    /**
+     * 获取用户关注企业
+     * @param userId    用户id
+     * @return          企业列表
+     */
+    List<CompanyInfoBean> getFollowCompanies(Long userId);
 }
