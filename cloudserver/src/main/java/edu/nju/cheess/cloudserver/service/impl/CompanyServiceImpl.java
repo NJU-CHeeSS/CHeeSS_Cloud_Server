@@ -95,9 +95,9 @@ public class CompanyServiceImpl implements CompanyService {
         String industry = company.getIndustry();
         List<CompanyMiniBean> result = new ArrayList<>();
         //获得某一类别的公司
-        List<Company> typeCompanies = companyDao.getCompanyByType(type);
+//        List<Company> typeCompanies = companyDao.getCompanyByType(type);
         String[] industries = industry.split("/");
-        List<Company> temp = typeCompanies;
+        List<Company> temp = new ArrayList<>();
         List<Company> industryCompany=null;
         for (String industry1 : industries) {
             if (temp.size()>RELATE_NUM){
@@ -116,9 +116,11 @@ public class CompanyServiceImpl implements CompanyService {
                 if (temp.size()>RELATE_NUM){
                     break;
                 }
+                temp.add(industryCompany.get(i));
             }
         }
         result.addAll(temp.stream().map(c -> new CompanyMiniBean(c.getId(), c.getName(), c.getIndustry(), getKeywordsByIntroduction(c.getIntroduction()))).collect(Collectors.toList()));
+//         System.out.println(result.size());
         return result;
     }
 
