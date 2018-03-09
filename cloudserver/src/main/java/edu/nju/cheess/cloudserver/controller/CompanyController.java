@@ -43,10 +43,11 @@ public class CompanyController {
      */
     @ResponseBody
     @RequestMapping(
-            value = "/name/{companyName}",
+            value = "/name",
+            params = {"companyName"},
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
-    public CompanyInfoBean getCompanyByName(@PathVariable String companyName) {
+    public CompanyInfoBean getCompanyByName(@RequestParam(value = "companyName") String companyName) {
 
         return companyService.getCompanyByName(companyName);
     }
