@@ -62,14 +62,24 @@ public class CompanyServiceImpl implements CompanyService {
     public Page<CompanyMiniBean> findCompanyByKeyword(String keyword, int size, int page) {
 
         edu.nju.cheess.cloudserver.util.Page<CompanyMiniBean> res = new edu.nju.cheess.cloudserver.util.Page<>();
-        res.setSize(size);
         res.setPage(page);
 
         List<Company> companyList = companyDao.getCompanyByCondition(keyword,
-                new PageRequest(page - 1, size));
+                new PageRequest(page, size));
 
-        res.setResult(companyList.stream().map(this::convertEntityToCompanyMiniBean).collect(Collectors.toList()));
         res.setTotalCount(companyList.size());
+
+        int fromIndex = size * (page - 1);
+        int toIndex = size * page;
+
+        toIndex = toIndex > companyList.size() ? companyList.size() : toIndex;
+        fromIndex = fromIndex > toIndex ? toIndex : fromIndex;
+        res.setSize(toIndex - fromIndex);
+        res.setResult(companyList
+                .subList(fromIndex, toIndex)
+                .stream()
+                .map(this::convertEntityToCompanyMiniBean)
+                .collect(Collectors.toList()));
         return res;
     }
 
