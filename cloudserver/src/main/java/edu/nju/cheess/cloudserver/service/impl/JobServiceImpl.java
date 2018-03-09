@@ -111,14 +111,37 @@ public class JobServiceImpl implements JobService {
     public Page<JobInfoBean> getRecommendedJobs(String order, int size, int page, Long userId) {
         Page<JobInfoBean> res = new Page<>();
         res.setOrder(order);
-        res.setSize(size);
         res.setPage(page);
 
         User user = userRepository.findOne(userId);
         List<String> skills = Arrays.asList(user.getSkill().trim().split("[，,]"));
 
         List<Job> jobs = jobDao.getRecommendJobs(user.getCity(), user.getDiploma(), skills);
+        Map<Long, Integer> jobApplyNumMap = new HashMap<>();
+        jobs.forEach(j -> jobApplyNumMap.put(j.getId(), applyJobRepository.countByJobId(j.getId())));
 
+        switch (order) {
+            case "date":        // 日期逆序
+                jobs.sort((j1, j2) -> j2.getDate().compareTo(j1.getDate()));
+                break;
+            case "low_money":   // 最低薪资正序
+                jobs.sort(Comparator.comparingDouble(Job::getLowMoney));
+                break;
+            case "hot":         // 申请数逆序
+                jobs.sort((j1, j2) -> jobApplyNumMap.get(j2.getId()) - jobApplyNumMap.get(j1.getId()));
+                break;
+            default:
+                break;
+        }
+
+        // 分页
+        int fromIndex = size * (page - 1);
+        int toIndex = size * page;
+
+        toIndex = toIndex > jobs.size() ? jobs.size() : toIndex;
+        fromIndex = fromIndex > toIndex ? toIndex : fromIndex;
+
+        jobs = jobs.subList(fromIndex, toIndex);
         res.setSize(jobs.size());
         res.setResult(jobs.stream().map(this::jobToJobInfoBean).collect(Collectors.toList()));
         return res;
@@ -319,7 +342,6 @@ public class JobServiceImpl implements JobService {
         double lowSum = 0.0, highSum = 0.0;
         double lowest = Integer.MAX_VALUE, highest = 0.0;
         int num = 0;
-
 
         for (Job job : jobs) {
             boolean isSatisfied = false;
