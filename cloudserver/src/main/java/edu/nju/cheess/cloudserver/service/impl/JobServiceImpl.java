@@ -156,21 +156,7 @@ public class JobServiceImpl implements JobService {
 
         List<Job> jobs = jobDao.getRecommendJobs(user.getCity(), user.getDiploma(), skills);
 
-        switch (order) {
-            case "date":        // 日期逆序
-                jobs.sort((j1, j2) -> j2.getDate().compareTo(j1.getDate()));
-                break;
-            case "low_money":   // 最低薪资正序
-                jobs.sort(Comparator.comparingDouble(Job::getLowMoney));
-                break;
-            case "hot":         // 申请数逆序
-                Map<Long, Integer> jobApplyNumMap = new HashMap<>();
-                jobs.forEach(j -> jobApplyNumMap.put(j.getId(), applyJobRepository.countByJobId(j.getId())));
-                jobs.sort((j1, j2) -> jobApplyNumMap.get(j2.getId()) - jobApplyNumMap.get(j1.getId()));
-                break;
-            default:
-                break;
-        }
+        sortJobList(order, jobs);
         res.setTotalCount(jobs.size());
 
         // 分页
