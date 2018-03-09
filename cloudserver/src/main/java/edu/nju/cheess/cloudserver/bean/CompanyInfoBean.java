@@ -48,6 +48,9 @@ public class CompanyInfoBean {
         this.type = type;
         this.industry = industry;
         this.scale = scale;
+        if (introduction.endsWith("展开")){
+            introduction=introduction.replace("展开","");
+        }
         this.introduction = introduction;
         this.keywords = keywords;
     }

@@ -34,7 +34,6 @@ public class JobServiceImpl implements JobService {
     @Autowired
     ApplyJobRepository applyJobRepository;
 
-    private static final String[] REQUIRE_BEGINNER = {"任职资格：", "任职要求：", "岗位要求："};
 
     private JobInfoBean jobToJobInfoBean(Job job) {
         return new JobInfoBean(job.getId(), job.getTitle(), job.getCompany(), job.getJobType(),
@@ -257,6 +256,10 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public SkillInfoBean analyseSkills(String jobType) {
+        final String[] REQUIRE_BEGINNER = {"任职资格：", "任职要求：", "岗位要求："};
+        final String[] REMOVE_WORD={"欢迎","加入","相关","公司","一定","工作","具有","优先","能够","强烈",
+                "享受","良好","较强","熟悉","企业","使用","优先","善于","擅长","帮主","悟空","现场","面试",
+                "不限","性别","面试","良好","职业","具备"};
         List<Job> jobs = jobDao.getJobByJobType(getJobTypeList(jobType));
         List<String> keywords = new ArrayList<>();
         List<Integer> keywordsNum = new ArrayList<>();
@@ -277,6 +280,17 @@ public class JobServiceImpl implements JobService {
             }
             List<String> jobKeywords = getKeywordsByInformation(require);
             for (String jobKeyword : jobKeywords) {
+                boolean containRemove=false;
+                for (String word :REMOVE_WORD){
+                    //排除词汇
+                    if (word.equals(jobKeyword)){
+                        containRemove=true;
+                    }
+                }
+                //跳过
+                if (containRemove){
+                    continue;
+                }
                 if (!keywords.contains(jobKeyword)) {
                     keywords.add(jobKeyword);
                     keywordsNum.add(1);
