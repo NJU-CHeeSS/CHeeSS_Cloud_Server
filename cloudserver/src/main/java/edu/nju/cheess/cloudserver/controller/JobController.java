@@ -70,7 +70,7 @@ public class JobController {
     @ResponseBody
     @RequestMapping(
             value = "/jobs/search",
-            params = {"order", "size", "page", "conditionBean"},
+            params = {"order", "size", "page", "location", "diploma", "earlyReleaseDate", "property"},
             method = RequestMethod.GET,
             produces = {"application/json; charset=UTF-8"})
     public Page<JobInfoBean> getJobByCondition(@RequestParam(value = "order") String order,
