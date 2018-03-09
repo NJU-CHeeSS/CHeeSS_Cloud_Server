@@ -44,8 +44,8 @@ public class JobServiceImpl implements JobService {
 
     private void sortJobList(String order, List<Job> jobs) {
         switch (order) {
-            case "low_money":   // 最低薪资正序
-                jobs.sort(Comparator.comparingDouble(Job::getLowMoney));
+            case "low_money":   // 最低薪资逆序
+                jobs.sort((j1, j2) -> Double.compare(j2.getLowMoney(), j1.getLowMoney()));
                 break;
             case "hot":         // 申请数逆序
                 Map<Long, Integer> jobApplyNumMap = new HashMap<>();
