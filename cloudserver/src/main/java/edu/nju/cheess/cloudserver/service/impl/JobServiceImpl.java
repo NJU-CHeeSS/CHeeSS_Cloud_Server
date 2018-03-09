@@ -42,33 +42,6 @@ public class JobServiceImpl implements JobService {
                 job.getInformation(), job.getEducation(), job.getTotalPeople(), job.getLowExperience(), job.getHighExperience());
     }
 
-    @Override
-    public JobInfoBean getJobInfo(Long jobId) {
-        Job job = jobDao.getJobById(jobId);
-        return jobToJobInfoBean(job);
-    }
-
-    @Override
-    public Page<JobInfoBean> getJobByKeyword(String keyword, String order, int size, int page) {
-
-        Page<JobInfoBean> res = new Page<>();
-        res.setOrder(order);
-        res.setSize(size);
-        res.setPage(page);
-
-        // 默认按照日期倒序排序
-        List<Job> jobPage = jobDao.getJobByCondition(keyword,
-                new PageRequest(page - 1, size, new Sort(Sort.Direction.DESC, order.equals("") ? "date" : order)));
-
-        List<JobInfoBean> beans = new ArrayList<>();
-        for (Job job : jobPage) {
-            beans.add(jobToJobInfoBean(job));
-        }
-        res.setResult(beans);
-        res.setTotalCount(jobPage.size());
-        return res;
-    }
-
     private void sortJobList(String order, List<Job> jobs) {
         switch (order) {
             case "low_money":   // 最低薪资正序
@@ -83,6 +56,36 @@ public class JobServiceImpl implements JobService {
                 jobs.sort((j1, j2) -> j2.getDate().compareTo(j1.getDate()));
                 break;
         }
+    }
+
+    @Override
+    public JobInfoBean getJobInfo(Long jobId) {
+        Job job = jobDao.getJobById(jobId);
+        return jobToJobInfoBean(job);
+    }
+
+    @Override
+    public Page<JobInfoBean> getJobByKeyword(String keyword, String order, int size, int page) {
+        Page<JobInfoBean> res = new Page<>();
+        res.setOrder(order);
+        res.setPage(page);
+
+        List<Job> jobs = jobDao.getJobByCondition(keyword,
+                new PageRequest(page - 1, size, new Sort(Sort.Direction.DESC, order.equals("") ? "date" : order)));
+
+        res.setTotalCount(jobs.size());
+
+        sortJobList(order, jobs);
+        // 分页
+        int fromIndex = size * (page - 1);
+        int toIndex = size * page;
+        toIndex = toIndex > jobs.size() ? jobs.size() : toIndex;
+        fromIndex = fromIndex > toIndex ? toIndex : fromIndex;
+
+        res.setResult(jobs.subList(fromIndex, toIndex).stream().map(this::jobToJobInfoBean).collect(Collectors.toList()));
+        res.setSize(toIndex - fromIndex);
+        res.setTotalCount(jobs.size());
+        return res;
     }
 
     @Override
@@ -117,11 +120,11 @@ public class JobServiceImpl implements JobService {
             for (Job job : jobs) {
                 String[] types = job.getJobType().split("/|\\s+");
                 List<String> typeList = getJobTypeList(property);
-                for (String type : types) {
+                L1: for (String type : types) {
                     for (String t : typeList) {
                         if (type.contains(t)) {
                             beans.add(job);
-                            break;
+                            break L1;
                         }
                     }
                 }
