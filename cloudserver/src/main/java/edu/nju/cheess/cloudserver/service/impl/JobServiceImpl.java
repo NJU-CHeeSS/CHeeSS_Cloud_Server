@@ -306,8 +306,9 @@ public class JobServiceImpl implements JobService {
         double lowest = Integer.MAX_VALUE, highest = 0.0;
         int num = 0;
 
-        boolean isSatisfied = false;
+
         for (Job job : jobs) {
+            boolean isSatisfied = false;
 
             if (type.equals("experience")) {
                 int lowExperience = job.getLowExperience();
