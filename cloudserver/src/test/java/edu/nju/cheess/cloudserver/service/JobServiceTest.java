@@ -24,4 +24,17 @@ public class JobServiceTest {
 //    public void treatmentTest(){
 //        jobService.analyzeTreatment("物流","上海");
 //    }
+
+//    @Test
+//    public void testRecommendJobs() {
+//        Page<JobInfoBean> jobPage = jobService.getRecommendedJobs("date", 10, 2, 1L);
+//        jobPage.getResult().forEach(j -> System.out.println(j.getCompanyName()));
+//    }
+
+//    @Test
+//    public void testGetJobByCondition() {
+//        Page<JobInfoBean> jobs = jobService.getJobByCondition("low_money", 10, 2, "南京", "本科", "不限", "主管|总监|经理");
+//        System.out.println(jobs.getTotalCount());
+//        jobs.getResult().forEach(j -> System.out.println(j.getCompanyName() + " " + j.getMinSalary()));
+//    }
 }

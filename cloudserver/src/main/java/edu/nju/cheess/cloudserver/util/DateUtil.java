@@ -24,4 +24,8 @@ public class DateUtil {
         return LocalDate.parse(str, DATE_FORMATTER);
     }
 
+    public static String localDateTimeToString(LocalDateTime dateTime) {
+        return DATE_TIME_FORMATTER.format(dateTime);
+    }
+
 }
