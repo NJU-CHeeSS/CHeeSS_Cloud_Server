@@ -56,7 +56,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void updateUserInfo(User user) {
         userRepository.updateUserInfo(user.getUsername(), user.getSex(), user.getCity(),
-                user.getAge(), user.getMajor(), user.getDiploma(), user.getSkill(), user.getExperience());
+                user.getAge(), user.getMajor(), user.getDiploma(), user.getSkill(),user.getEmail(), user.getTelephone(),user.getExperience());
     }
 
     @Override
