@@ -14,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,7 +26,7 @@ import java.util.stream.Collectors;
 public class CompanyServiceImpl implements CompanyService {
 
     private static final int RANK_NUM = 15;
-    private static final int RELATE_NUM=15;
+    private static final int RELATE_NUM = 15;
 
     @Autowired
     private CompanyDao companyDao;
@@ -111,7 +114,7 @@ public class CompanyServiceImpl implements CompanyService {
             if (temp.size() > RELATE_NUM) {
                 break;
             }
-            industryCompany=companyDao.getCompanyByIndustry(industry1);
+            industryCompany = companyDao.getCompanyByIndustry(industry1);
             for (int i = 0; i < industryCompany.size(); i++) {
                 //排除自己
                 if (industryCompany.get(i).getId().equals(companyId)) {
@@ -121,7 +124,7 @@ public class CompanyServiceImpl implements CompanyService {
                 if (temp.contains(industryCompany.get(i))) {
                     continue;
                 }
-                if (temp.size()>RELATE_NUM) {
+                if (temp.size() > RELATE_NUM) {
                     break;
                 }
                 temp.add(industryCompany.get(i));
@@ -170,7 +173,7 @@ public class CompanyServiceImpl implements CompanyService {
             meanSalary = meanSalary + (job.getHighMoney() + job.getLowMoney()) / 2.0;
         }
         meanSalary = meanSalary / jobs.size();
-        return new CompanyAnalyseBean(maxSalary, minSalary, meanSalary);
+        return new CompanyAnalyseBean(maxSalary, minSalary, (int) meanSalary);
     }
 
     @Override
