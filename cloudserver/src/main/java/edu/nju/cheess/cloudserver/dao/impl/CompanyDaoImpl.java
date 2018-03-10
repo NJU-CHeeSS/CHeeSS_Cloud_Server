@@ -98,19 +98,14 @@ public class CompanyDaoImpl implements CompanyDao {
         Map<Long, Long> popularMap = new TreeMap<>();
         Object[][] companyPopular = followCompanyRepository.findCompanyFollowNum();
         for (int i = 0; i < companyPopular.length; i++) {
-            int id=(int)companyPopular[i][0];
-            long num=(long)companyPopular[i][1];
-            popularMap.put(new Long((long)id),(long)companyPopular[i][1]);
+            int id = (int)companyPopular[i][0];
+            long num = (long)companyPopular[i][1];
+            popularMap.put((long) id,(long)companyPopular[i][1]);
         }
-        List<Map.Entry<Long,Long>> list = new ArrayList<Map.Entry<Long,Long>>(popularMap.entrySet());
+        List<Map.Entry<Long,Long>> list = new ArrayList<>(popularMap.entrySet());
         //然后通过比较器来实现排序
-        Collections.sort(list,new Comparator<Map.Entry<Long,Long>>() {
-            //降序排序
-            public int compare(Map.Entry<Long,Long> o1,
-                               Map.Entry<Long,Long> o2) {
-                return o2.getValue().compareTo(o1.getValue());
-            }
-        });
+        //降序排序
+        list.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
         List<Company> result = new ArrayList<>();
         for (Map.Entry<Long,Long> followCompany : list) {
             //不超过10个

@@ -97,11 +97,37 @@ public class JobDaoImpl implements JobDao {
     }
 
     @Override
-    public List<Job> getJobByCondition(String keyword, Pageable pageable) {
-        List<Map<String, String>> dataList = hBaseHelper.getDataByColumnValue(
-                TABLE_NAME, "info", "title", new SubstringComparator(keyword));
+    public List<Job> getJobByCondition(String keyword, String location, String education, String time, Pageable pageable) {
+        FilterList filterList = new FilterList();
+        if (location != null) {
+            filterList.addFilter(new SingleColumnValueFilter(
+                    Bytes.toBytes("info"), Bytes.toBytes("location"),
+                    CompareFilter.CompareOp.EQUAL, new SubstringComparator(location)));
+        }
+        if (education != null) {
+            filterList.addFilter(new SingleColumnValueFilter(
+                    Bytes.toBytes("requirement"), Bytes.toBytes("education"),
+                    CompareFilter.CompareOp.EQUAL, Bytes.toBytes(education)));
+        }
+        // 大于设置时间
+        if (time != null) {
+            filterList.addFilter(new SingleColumnValueFilter(
+                    Bytes.toBytes("info"), Bytes.toBytes("date"),
+                    CompareFilter.CompareOp.GREATER, Bytes.toBytes(time)
+            ));
+        }
+        filterList.addFilter(new SingleColumnValueFilter(
+                Bytes.toBytes("info"), Bytes.toBytes("title"),
+                CompareFilter.CompareOp.EQUAL, new SubstringComparator(keyword)));
+
+        List<Map<String, String>> dataList = hBaseHelper.getDataByFilterList(TABLE_NAME, filterList);
 
         return dataList.stream().map(this::convertMapToJobEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Job> getJobByCondition(String keyword, Pageable pageable) {
+        return getJobByCondition(keyword, null, null, null, pageable);
     }
 
     @Override

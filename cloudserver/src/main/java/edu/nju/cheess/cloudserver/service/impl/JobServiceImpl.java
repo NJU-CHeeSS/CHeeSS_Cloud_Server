@@ -9,6 +9,7 @@ import edu.nju.cheess.cloudserver.repository.ApplyJobRepository;
 import edu.nju.cheess.cloudserver.repository.UserRepository;
 import edu.nju.cheess.cloudserver.service.CompanyService;
 import edu.nju.cheess.cloudserver.service.JobService;
+import edu.nju.cheess.cloudserver.util.DateUtil;
 import edu.nju.cheess.cloudserver.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +42,22 @@ public class JobServiceImpl implements JobService {
                 job.getInformation(), job.getEducation(), job.getTotalPeople(), job.getLowExperience(), job.getHighExperience());
     }
 
+    private void sortJobList(String order, List<Job> jobs) {
+        switch (order) {
+            case "low_money":   // 最低薪资逆序
+                jobs.sort((j1, j2) -> Double.compare(j2.getLowMoney(), j1.getLowMoney()));
+                break;
+            case "hot":         // 申请数逆序
+                Map<Long, Integer> jobApplyNumMap = new HashMap<>();
+                jobs.forEach(j -> jobApplyNumMap.put(j.getId(), applyJobRepository.countByJobId(j.getId())));
+                jobs.sort((j1, j2) -> jobApplyNumMap.get(j2.getId()) - jobApplyNumMap.get(j1.getId()));
+                break;
+            default:            // 默认日期逆序排序
+                jobs.sort((j1, j2) -> j2.getDate().compareTo(j1.getDate()));
+                break;
+        }
+    }
+
     @Override
     public JobInfoBean getJobInfo(Long jobId) {
         Job job = jobDao.getJobById(jobId);
@@ -49,22 +66,25 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public Page<JobInfoBean> getJobByKeyword(String keyword, String order, int size, int page) {
-
         Page<JobInfoBean> res = new Page<>();
         res.setOrder(order);
-        res.setSize(size);
         res.setPage(page);
 
-        // 默认按照日期倒序排序
-        List<Job> jobPage = jobDao.getJobByCondition(keyword,
+        List<Job> jobs = jobDao.getJobByCondition(keyword,
                 new PageRequest(page - 1, size, new Sort(Sort.Direction.DESC, order.equals("") ? "date" : order)));
 
-        List<JobInfoBean> beans = new ArrayList<>();
-        for (Job job : jobPage) {
-            beans.add(jobToJobInfoBean(job));
-        }
-        res.setResult(beans);
-        res.setTotalCount(jobPage.size());
+        res.setTotalCount(jobs.size());
+
+        sortJobList(order, jobs);
+        // 分页
+        int fromIndex = size * (page - 1);
+        int toIndex = size * page;
+        toIndex = toIndex > jobs.size() ? jobs.size() : toIndex;
+        fromIndex = fromIndex > toIndex ? toIndex : fromIndex;
+
+        res.setResult(jobs.subList(fromIndex, toIndex).stream().map(this::jobToJobInfoBean).collect(Collectors.toList()));
+        res.setSize(toIndex - fromIndex);
+        res.setTotalCount(jobs.size());
         return res;
     }
 
@@ -73,37 +93,58 @@ public class JobServiceImpl implements JobService {
                                                String location, String diploma, String earlyReleaseDate, String property) {
         Page<JobInfoBean> res = new Page<>();
         res.setOrder(order);
-        res.setSize(size);
         res.setPage(page);
 
-        // 默认按照日期倒序排序
-        List<Job> jobList = jobDao.getJobByCondition("",
-                new PageRequest(page - 1, size, new Sort(Sort.Direction.DESC, order.equals("") ? "date" : order)));
-        List<JobInfoBean> beans = new ArrayList<>();
-
-        for (Job job : jobList) {
-            LocalDateTime time = LocalDateTime.now();
-            switch (earlyReleaseDate) {
-                case "近24小时":
-                    time = time.minusDays(1);
-                    break;
-                case "上周":
-                    time = time.minusWeeks(1);
-                    break;
-                case "上月":
-                    time = time.minusMonths(1);
-                    break;
-            }
-            if (!location.equals("不限") && location.equals(job.getLocation()) &&
-                    !earlyReleaseDate.equals("不限") && time.isBefore(job.getDate()) &&
-                    !diploma.equals("不限") && diploma.equals(job.getEducation()) &&
-                    !property.equals("不限") && jobDao.getJobByJobType(getJobTypeList(property)).contains(job)) {
-
-                beans.add(jobToJobInfoBean(job));
-            }
+        LocalDateTime time = LocalDateTime.now();
+        switch (earlyReleaseDate) {
+            case "近24小时":
+                time = time.minusDays(1);
+                break;
+            case "上周":
+                time = time.minusWeeks(1);
+                break;
+            case "上月":
+                time = time.minusMonths(1);
+                break;
         }
-        res.setResult(beans);
-        res.setTotalCount(jobList.size());
+
+        List<Job> jobs = jobDao.getJobByCondition("",
+                location.equals("不限") ? null : location,
+                diploma.equals("不限") ? null : diploma,
+                earlyReleaseDate.equals("不限") ? null : DateUtil.localDateTimeToString(time),
+                new PageRequest(page - 1, size, new Sort(Sort.Direction.DESC, order.equals("") ? "date" : order)));
+        List<Job> beans = new ArrayList<>();
+
+        if (! property.equals("不限")) {
+            // 职位类型与搜索类型匹配
+            for (Job job : jobs) {
+                String[] types = job.getJobType().split("/|\\s+");
+                List<String> typeList = getJobTypeList(property);
+                L1: for (String type : types) {
+                    for (String t : typeList) {
+                        if (type.contains(t)) {
+                            beans.add(job);
+                            break L1;
+                        }
+                    }
+                }
+            }
+        } else {
+            beans = jobs;
+        }
+        res.setTotalCount(beans.size());
+
+        sortJobList(order, beans);
+
+        int fromIndex = size * (page - 1);
+        int toIndex = size * page;
+        toIndex = toIndex > beans.size() ? beans.size() : toIndex;
+        fromIndex = fromIndex > toIndex ? toIndex : fromIndex;
+
+        beans = beans.subList(fromIndex, toIndex);
+
+        res.setResult(beans.stream().map(this::jobToJobInfoBean).collect(Collectors.toList()));
+        res.setSize(toIndex - fromIndex);
         return res;
     }
 
@@ -117,22 +158,9 @@ public class JobServiceImpl implements JobService {
         List<String> skills = Arrays.asList(user.getSkill().trim().split("[，,]"));
 
         List<Job> jobs = jobDao.getRecommendJobs(user.getCity(), user.getDiploma(), skills);
-        Map<Long, Integer> jobApplyNumMap = new HashMap<>();
-        jobs.forEach(j -> jobApplyNumMap.put(j.getId(), applyJobRepository.countByJobId(j.getId())));
 
-        switch (order) {
-            case "date":        // 日期逆序
-                jobs.sort((j1, j2) -> j2.getDate().compareTo(j1.getDate()));
-                break;
-            case "low_money":   // 最低薪资正序
-                jobs.sort(Comparator.comparingDouble(Job::getLowMoney));
-                break;
-            case "hot":         // 申请数逆序
-                jobs.sort((j1, j2) -> jobApplyNumMap.get(j2.getId()) - jobApplyNumMap.get(j1.getId()));
-                break;
-            default:
-                break;
-        }
+        sortJobList(order, jobs);
+        res.setTotalCount(jobs.size());
 
         // 分页
         int fromIndex = size * (page - 1);
