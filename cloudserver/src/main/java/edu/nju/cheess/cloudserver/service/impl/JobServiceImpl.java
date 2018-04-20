@@ -3,6 +3,7 @@ package edu.nju.cheess.cloudserver.service.impl;
 import com.hankcs.hanlp.HanLP;
 import edu.nju.cheess.cloudserver.bean.*;
 import edu.nju.cheess.cloudserver.dao.JobDao;
+import edu.nju.cheess.cloudserver.entity.ApplyJob;
 import edu.nju.cheess.cloudserver.entity.Job;
 import edu.nju.cheess.cloudserver.entity.User;
 import edu.nju.cheess.cloudserver.repository.ApplyJobRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -496,5 +498,16 @@ public class JobServiceImpl implements JobService {
     @Override
     public ResultMessageBean countApply(Long jobId) {
         return new ResultMessageBean(true, String.valueOf(applyJobRepository.countByJobId(jobId)));
+    }
+
+    @Override
+    public CompetitionInfoBean analyseCompetitors(Long jobId) {
+        List<ApplyJob> applyJobList = applyJobRepository.findByJobId(jobId);
+        Map<String, Long> skills = applyJobList.stream()
+                .map(a -> userRepository.findOne(a.getUserId()).getSkill())
+                .filter(s -> s != null && !s.matches("\\s*"))
+                .flatMap(s -> Arrays.stream(s.split(",")))
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        return new CompetitionInfoBean(skills);
     }
 }

@@ -11,6 +11,8 @@ public interface ApplyJobRepository extends JpaRepository<ApplyJob, Long> {
 
     List<ApplyJob> findByUserId(Long userId);
 
+    List<ApplyJob> findByJobId(Long jobId);
+
     int countByJobId(Long jobId);
 
 }

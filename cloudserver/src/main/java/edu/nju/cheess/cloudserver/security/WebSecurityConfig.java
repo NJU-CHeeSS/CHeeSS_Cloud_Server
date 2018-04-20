@@ -1,7 +1,6 @@
 package edu.nju.cheess.cloudserver.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@ComponentScan("org.project.security")
+//@ComponentScan("org.project.security")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired

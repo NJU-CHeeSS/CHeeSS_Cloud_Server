@@ -93,4 +93,12 @@ public interface JobService {
      */
     ResultMessageBean countApply(Long jobId);
 
+    /**
+     * 分析岗位竞争对手情况
+     *
+     * @param jobId     职位id
+     * @return          Result
+     */
+    CompetitionInfoBean analyseCompetitors(Long jobId);
+
 }
